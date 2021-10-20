@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">WorkOS .NET Example Directory Sync App</h1>
+    <h2>Directory @ViewBag.Id</h2>
+</div>
+
+<table style="margin-left: auto; margin-right: auto">
+    <tr>
+        <td style="width: 500px">
+            <h3><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Users">View Directory Users</a></h3>
+        </td>
+        <td style="width: 500px">
+            <h3><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Groups">View Directory Groups</a></h3>
+        </td>
+    </tr>
+</table>

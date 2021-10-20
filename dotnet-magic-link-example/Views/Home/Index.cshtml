@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">WorkOS .NET Example Magic Link App</h1>
+</div>
+
+@using (Html.BeginForm("passwordless", "home"))
+{
+<form method="post" >
+    <fieldset>
+        <legend>Send a Magic Link email</legend>
+        <div>
+            <label for="email">Email Address:</label>
+            <input type="text" name="email" value="" />
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </div>
+    </fieldset>
+</form>
+}

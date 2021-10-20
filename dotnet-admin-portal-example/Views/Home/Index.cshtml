@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">WorkOS .NET Example Admin Portal App</h1>
+</div>
+
+@using (Html.BeginForm("provision", "home"))
+{
+<form method="post" >
+    <fieldset>
+        <legend>Launch an Admin Portal session</legend>
+        <div>
+            <label for="OrganizationId">Organization ID:</label>
+            <input type="text" name="OrganizationId" value="" />
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </div>
+    </fieldset>
+</form>
+}

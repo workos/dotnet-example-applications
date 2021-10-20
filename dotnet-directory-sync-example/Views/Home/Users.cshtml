@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Users";
+}
+
+<table style="margin-left: auto; margin-right: auto">
+    <tr>
+        <td style="width: 300px; vertical-align:top">
+            <h3>DIRECTORY USERS</h3>
+            <ul>
+                @foreach (var user in @ViewBag.Users)
+                {
+                    <li>
+                        ID: @user.Id <br />
+                        Username: @user.Username <br />
+                        First Name: @user.FirstName <br />
+                        LastName: @user.Id <br />
+                    </li>
+                }
+            </ul>
+        </td>
+    </tr>
+</table>
+
+<form style="text-align: center">
+    <input type="button" value="Go Back" onclick="history.back()">
+</form>
