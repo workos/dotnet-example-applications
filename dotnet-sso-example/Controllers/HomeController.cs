@@ -40,7 +40,7 @@ namespace WorkOS.SSOExampleApp.Controllers
             var options = new GetAuthorizationURLOptions
             {
                 ClientId = Environment.GetEnvironmentVariable("WORKOS_CLIENT_ID"),
-                Domain = "dotnet.com",
+                Connection = "conn_123abc",
                 RedirectURI = "https://localhost:5001/Home/Callback",
             };
 
