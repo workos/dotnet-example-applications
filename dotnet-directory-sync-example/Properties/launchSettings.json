@@ -24,7 +24,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "WORKOS_API_KEY": "",
-        "WORKOS_DIRECTORY_ID": ""
+        "WORKOS_DIRECTORY_ID": "",
+        "WORKOS_WEBHOOK_SECRET": ""
       }
     }
   }
