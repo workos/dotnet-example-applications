@@ -20,8 +20,8 @@ namespace WorkOS.DSyncExampleApp.Controllers
     public async Task<IActionResult> Index()
     {
         var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-        // Validate Webhooks variables
         Console.WriteLine(json);
+        // Webhooks Validation variables
         var webhookEvent = json;
         var signatureHeader = Request.Headers["WorkOS-Signature"];
         var secret = Environment.GetEnvironmentVariable("WORKOS_WEBHOOK_SECRET");
