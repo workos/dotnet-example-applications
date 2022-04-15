@@ -23,6 +23,12 @@ namespace WorkOS.SSOExampleApp.Controllers
 
         public IActionResult Index()
         {
+            // Redirect the user to the url generated above.
+            return View("Index");
+        }
+
+        [Route("login")]
+        public IActionResult Initialize(){
             // Initialize the WorkOS client with your WorkOS API Key.
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
 
@@ -40,20 +46,20 @@ namespace WorkOS.SSOExampleApp.Controllers
             var options = new GetAuthorizationURLOptions
             {
                 ClientId = Environment.GetEnvironmentVariable("WORKOS_CLIENT_ID"),
-                Connection = "conn_123abc",
+                Connection = "conn_01FKEGPNAQ7D2E8XGESC75YDEZ",
                 RedirectURI = "https://localhost:5001/Home/Callback",
             };
 
             // Call GetAuthorizationURL and store the resulting URL in a `url` variable.
             string url = ssoService.GetAuthorizationURL(options);
 
-            // Redirect the user to the url generated above.
             return Redirect(url);
         }
 
         // Capture and save the `code` passed as a querystring in the Redirect URI.
         public async Task<IActionResult> Callback([FromQuery(Name = "code")] string code)
         {
+            WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
             // Store client ID.
             string clientId = Environment.GetEnvironmentVariable("WORKOS_CLIENT_ID");
 
