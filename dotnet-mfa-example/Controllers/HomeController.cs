@@ -98,7 +98,7 @@ namespace WorkOS.MFAExampleApp.Controllers
                 return RedirectToAction("Index");
             }else{
 
-            //Type not sms, return error view
+            //Type not totp, return error view
             return View("Error");
             }
         }
