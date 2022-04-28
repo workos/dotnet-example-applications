@@ -33,7 +33,9 @@
                         <h1>User Verified: @ViewBag.successFactor.Valid</h1>
                         <p>Factor ID: @ViewBag.successFactor.Challenge.FactorId</p>
                         <p>Created At: @ViewBag.successFactor.Challenge.CreatedAt</p>
-                        <p>Expires At: @ViewBag.successFactor.Challenge.ExpiresAt</p>
+                        @if (ViewBag.currentFactor.Type == "totp"){
+                            <p>Expires At: @ViewBag.successFactor.Challenge.ExpiresAt</p>
+                        }
                     </div>
                 </div>
                 <a href="/"><button class='button'>Go Back Home</button></a>

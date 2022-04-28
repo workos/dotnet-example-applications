@@ -12,6 +12,8 @@ git clone https://github.com/workos-inc/dotnet-mfa-example.git && cd dotnet-mfa-
 
 ## Configure your environment
 
+Note: If you are using Apple M1 chip on Monterrary or higher you will need to change TargetFramework from net 5.0 to 6.0 inside the project file.
+
 1. Grab your API Key and Client ID from the WorkOS Dashboard.
 Set these as environment variables in the Properties/launchSettings.json file,
 labeled `WORKOS_API_KEY` and `WORKOS_CLIENT_ID`
