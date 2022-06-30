@@ -17,5 +17,3 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 5.0.x
-    - name: Build
-      run: dotnet build --no-restore
