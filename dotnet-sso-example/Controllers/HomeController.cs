@@ -39,7 +39,7 @@ namespace WorkOS.SSOExampleApp.Controllers
             }
         }
 
-        [Route("Auth")]
+        [Route("auth")]
         public IActionResult Login()
         {
             // Initialize the WorkOS client with your WorkOS API Key.
