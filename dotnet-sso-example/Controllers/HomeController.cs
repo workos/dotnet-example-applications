@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using WorkOS.SSOExampleApp.Models;
 using WorkOS; // Import WorkOS Package
@@ -22,6 +23,24 @@ namespace WorkOS.SSOExampleApp.Controllers
         }
 
         public IActionResult Index()
+        {
+            //Check for session.
+            var loginFirstName = HttpContext.Session.GetString("FirstName");
+            var loginProfile = HttpContext.Session.GetString("Profile");
+            if (loginFirstName != null && loginProfile != null)
+            {
+                ViewBag.Name = loginFirstName;
+                ViewBag.Profile = loginProfile;
+                return View("Callback");
+            }
+            else
+            {
+                return View("Index");
+            }
+        }
+
+        [Route("Auth")]
+        public IActionResult Login()
         {
             // Initialize the WorkOS client with your WorkOS API Key.
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
@@ -40,8 +59,8 @@ namespace WorkOS.SSOExampleApp.Controllers
             var options = new GetAuthorizationURLOptions
             {
                 ClientId = Environment.GetEnvironmentVariable("WORKOS_CLIENT_ID"),
-                Connection = "conn_123abc",
-                RedirectURI = "https://localhost:5001/Home/Callback",
+                Connection = "conn_1234",
+                RedirectURI = "https://localhost:5001/Home/Callback/",
             };
 
             // Call GetAuthorizationURL and store the resulting URL in a `url` variable.
@@ -74,11 +93,33 @@ namespace WorkOS.SSOExampleApp.Controllers
             // Extract profile and store in `profile`.
             var profile = profileAndToken.Profile;
 
+            // Pass first name from profile to view.
+            ViewBag.Name = profile.FirstName;
+
             // Pass profile to view.
             ViewBag.Profile = JsonSerializer.Serialize(profile);
 
             return View();
 
+        }
+
+
+        [Route("logout")]
+        public IActionResult Logout()
+        {
+            //Clear session values
+            HttpContext.Session.Clear();
+            //Clear view data
+            ViewData.Clear();
+
+            //Clear stored cookies
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                if (cookie == ".AspNetCore.Session")
+                    Response.Cookies.Delete(cookie);
+            }
+
+            return RedirectToAction("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
