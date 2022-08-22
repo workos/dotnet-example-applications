@@ -34,6 +34,7 @@ namespace WorkOS.MagicLinkExampleApp.Controllers
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
 
             var email = Request.Form["email"].ToString();
+            TempData["Email"] = email;
 
             // Initialize Passwordless Service.
             var passwordlessService = new PasswordlessService();
@@ -49,6 +50,7 @@ namespace WorkOS.MagicLinkExampleApp.Controllers
             var session = await passwordlessService.CreateSession(options);
             // API call to send email, passing in ID of session generated above.
             await passwordlessService.SendSession(session.Id);
+            TempData["Link"] = session.Link;
 
             return Redirect("Confirmation");
         }

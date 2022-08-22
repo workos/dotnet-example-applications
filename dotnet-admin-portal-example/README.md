@@ -7,7 +7,7 @@ An example application demonstrating how the Admin Portal works with WorkOS and 
 Clone the main repo and install dependencies for the Admin Portal app:
 
 ```sh
-git clone https://github.com/workos-inc/dotnet-example-applications.git && cd dotnet-example-applications/dotnet-admin-portal-example && dotnet build
+git clone https://github.com/workos/dotnet-example-applications.git && cd dotnet-admin-portal-example && dotnet build
 ```
 
 ## Configure your environment

@@ -2,32 +2,31 @@
     ViewData["Title"] = "Factor Detail";
 }
 
-<body class="container_success">
-    <div class="logged_in_nav">
-        <div class="flex">
-            <p>MFA Example Application</p>
-        </div>
-        <div>
-            <img src="../static/images/workos_logo_new.png" alt="workos logo">
+<body class="container-success">
+    <div class="logged-in-nav">
+        <div class='flex-column'>
+            <img src="~/images/workos-logo-with-text.png" alt="workos logo">
         </div>
     </div>
     <div class='flex'>
-        <div class="logged_in_div_left">
-            <div>
+        <div class="logged-in-div-left">
+            <div class="title-text">
                 <h1>Your app,</h1>
-                <h2>Enterprise Ready</h2>
+                <h2 class="home-hero-gradient">Enterprise Ready</h2>
             </div>
-            <div>
-                <a href="https://workos.com/" target="_blank"><button class='button'>WorkOS</button></a>
-                <a href="https://workos.com/docs" target="_blank"><button class='button'>Documentation</button></a>
-                <a href="https://workos.com/docs/reference" target="_blank"><button class='button'>API
-                        Reference</button></a>
-                <a href="https://workos.com/blog" target="_blank"><button class='button'>Blog</button></a>
-
+            <div class="title-subtext">
+                <p>Start selling to enterprise customers with just a few lines of code.</p>
+                <p>Implement features like single sign-on in minutes instead of months.</p>
+            </div>
+            <div class="flex success-buttons">
+                <a href="https://workos.com/signup" target="_blank"><button class='button'>Get Started</button></a>
+                <a href="mailto:sales@workos.com?subject=WorkOS Sales Inquiry" target="_blank"><button
+                        class='button button-outline sales-button'>Contact
+                        Sales</button></a>
             </div>
         </div>
-        <div class="logged_in_div_right">
-            <div class="flex_column">
+        <div class="logged-in-div-right">
+            <div class="flex-column">
                 <div class="flex">
                     <div class="flex-column">
                         <div>
@@ -44,8 +43,8 @@
                         </div>
                     </div>
                     @if(ViewBag.currentFactor.Type == "totp"){
-                    <div class="qr_div">
-                        <img class="qr_code" src='@ViewBag.currentFactor.Totp.QrCode' alt="qr_code">
+                    <div class="qr-div">
+                        <img class="qr-code" src='@ViewBag.currentFactor.Totp.QrCode' alt="qr_code">
                     </div>
                     }
                 </div>
@@ -53,7 +52,7 @@
                 <div class="flex-column">
                     <div>
                         @using (Html.BeginForm("ChallengeFactor","Home", FormMethod.Post)){
-                            <div class='flex_column'>
+                            <div class='flex-column'>
                                 @if(ViewBag.currentFactor.Type == "sms"){
                                 <div>
                                     <input type="text" id="sms_message" name="sms_message" class="text_input"

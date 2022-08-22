@@ -7,7 +7,7 @@ An example application demonstrating how Directory Sync works with WorkOS and .N
 Clone the main repo and install dependencies for the Directory Sync app:
 
 ```sh
-git clone https://github.com/workos-inc/dotnet-example-applications.git && cd dotnet-example-applications/dotnet-directory-sync-example && dotnet build
+git clone https://github.com/workos/dotnet-example-applications.git && cd dotnet-directory-sync-example && dotnet build
 ```
 
 ## Configure your environment

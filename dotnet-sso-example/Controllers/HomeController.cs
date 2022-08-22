@@ -39,7 +39,7 @@ namespace WorkOS.SSOExampleApp.Controllers
             }
         }
 
-        [Route("auth")]
+        [Route("login")]
         public IActionResult Login()
         {
             // Initialize the WorkOS client with your WorkOS API Key.
@@ -59,7 +59,7 @@ namespace WorkOS.SSOExampleApp.Controllers
             var options = new GetAuthorizationURLOptions
             {
                 ClientId = Environment.GetEnvironmentVariable("WORKOS_CLIENT_ID"),
-                Connection = "conn_1234",
+                Connection = "conn_01GA1FK0BNF6EADZKYFQMGZSNN",
                 RedirectURI = "https://localhost:5001/Home/Callback/",
             };
 

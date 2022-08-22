@@ -7,7 +7,7 @@ An example application demonstrating how MFA works with WorkOS and .NET.
 Clone this repo and install dependencies:
 
 ```sh
-git clone https://github.com/workos-inc/dotnet-mfa-example.git && cd dotnet-mfa-example && dotnet build
+git clone https://github.com/workos/dotnet-example-applications.git && cd dotnet-mfa-example && dotnet build
 ```
 
 ## Configure your environment
