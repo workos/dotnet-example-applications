@@ -2,23 +2,24 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">WorkOS .NET Example Admin Portal App</h1>
-</div>
-
-@using (Html.BeginForm("provision", "home"))
-{
-<form method="post" >
-    <fieldset>
-        <legend>Launch an Admin Portal session</legend>
-        <div>
-            <label for="OrganizationId">Organization ID:</label>
-            <input type="text" name="OrganizationId" value="" />
+<body class="container-login">
+    <div class='flex-column'>
+        <div class="flex heading-div">
+            <img src="~/images/workos-logo-with-text.png" alt="workos logo">
         </div>
-        <div>
-            <label>&nbsp;</label>
-            <input type="submit" value="Submit" class="submit" />
-        </div>
-    </fieldset>
-</form>
-}
+        <h2>.NET Admin Portal Example App</h2>
+        @using (Html.BeginForm("Provision", "Home", FormMethod.Post)){
+            <div class='flex-column'>
+                <div>
+                    <input type="text" placeholder='Enter Your Organization Name to Provision' id="org" name="org" class="text-input" required>
+                </div>
+                <div>
+                    <input type="text" placeholder='Enter a Space Separated List of Domains Used By the Org' id="domain" name="domain" class="text-input text-input-2" required>
+                </div>
+                <div>
+                    <button type="submit" class="button">Create Organization and Log In</button>
+                </div>
+            </div>
+        }
+    </div>
+</body>

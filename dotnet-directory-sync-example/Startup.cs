@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WorkOS;
 
-namespace WorkOS.DSyncExampleApp
+namespace WorkOS.MFAExampleApp
 {
     public class Startup
     {
@@ -25,6 +25,13 @@ namespace WorkOS.DSyncExampleApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.Cookie.IsEssential = true;
+                options.IdleTimeout = TimeSpan.FromMinutes(15);
+            }
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,18 +47,26 @@ namespace WorkOS.DSyncExampleApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-           // app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseSession();
+
             app.UseAuthorization();
+
+            app.UseWebSockets();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "webhook",
+                    pattern: "{controller=Webhook}/{action=Webhook}/{id?}");
             });
         }
     }
