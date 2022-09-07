@@ -4,7 +4,7 @@ An example application demonstrating how Magic Link works with WorkOS and .NET.
 
 ## Clone and Install
 
-Clone the main repo and install dependencies for the Magic Link app:
+Clone the main repository and install dependencies for the Magic Link app:
 
 ```sh
 git clone https://github.com/workos/dotnet-example-applications.git && cd dotnet-magic-link-example && dotnet build

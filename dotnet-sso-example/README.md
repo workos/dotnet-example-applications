@@ -4,7 +4,7 @@ An example application demonstrating how SSO works with WorkOS and .NET.
 
 ## Clone and Install
 
-Clone this repo and install dependencies:
+Clone this repository and install dependencies:
 
 ```sh
 git clone https://github.com/workos/dotnet-example-applications.git && cd dotnet-sso-example && dotnet build
