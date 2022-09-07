@@ -18,7 +18,6 @@ namespace WorkOS.DSyncExampleApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        SocketIO client = new SocketIO("https://localhost:5000/");
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -97,6 +96,7 @@ namespace WorkOS.DSyncExampleApp.Controllers
         [Route("webhook")]
         public async Task<IActionResult> Webhook()
         {
+            SocketIO client = new SocketIO("https://localhost:5000/");
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             Console.WriteLine(json);
             // Webhooks Validation variables
