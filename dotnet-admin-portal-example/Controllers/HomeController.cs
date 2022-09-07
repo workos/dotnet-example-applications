@@ -17,8 +17,6 @@ namespace WorkOS.AdminPortalExampleApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        String OrganizationId;
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -50,39 +48,40 @@ namespace WorkOS.AdminPortalExampleApp.Controllers
 
             // Make API call to generate new organization.
             var newOrganization = await organizationService.CreateOrganization(options);
-            OrganizationId = newOrganization.Id;
+            TempData["OrganizationId"] = newOrganization.Id;
             Console.WriteLine("Created new org!");
 
             // Redirect user to Admin Portal link.
             return View("LoggedIn");
         }
 
-        [Route("sso-admin-portal")]
+        [Route("sso")]
         [HttpPost]
         public async Task<IActionResult> AdminPortalSSO()
         {
             var portalService = new PortalService();
+            var organizationId = TempData["OrganizationId"].ToString();
             var options = new GenerateLinkOptions
             {
                 Intent = Intent.SSO,
-                Organization = OrganizationId,
+                Organization = organizationId,
             };
             var portalLink = await portalService.GenerateLink(options);
-            Console.WriteLine("This is the portal link: " + portalLink);
             return Redirect(portalLink);
         }
 
-        [HttpPost("dsync-admin-portal")]
+        [Route("dsync")]
+        [HttpPost]
         public async Task<IActionResult> AdminPortalDSync()
         {
             var portalService = new PortalService();
+            var organizationId = TempData["OrganizationId"].ToString();
             var options = new GenerateLinkOptions
             {
                 Intent = Intent.DSync,
-                Organization = OrganizationId,
+                Organization = organizationId,
             };
             var portalLink = await portalService.GenerateLink(options);
-            Console.WriteLine("This is the portal link: " + portalLink);
             return Redirect(portalLink);
         }
 
