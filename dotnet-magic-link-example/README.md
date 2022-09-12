@@ -12,7 +12,7 @@ git clone https://github.com/workos/dotnet-example-applications.git && cd dotnet
 
 ## Configure your environment
 
-1. Grab your [API Key](https://dashboard.workos.com/api-keys). 
+1. Grab your [API Key](https://dashboard.workos.com/api-keys).
 2. Grab your [Client ID](https://dashboard.workos.com/configuration).
 3. Set these as environment variables in the Properties/launchSettings.json file,
 labeled `WORKOS_API_KEY` and `WORKOS_CLIENT_ID`.
