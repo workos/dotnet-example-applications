@@ -31,11 +31,13 @@ namespace WorkOS.MFAExampleApp.Controllers
             var service = new MfaService();
             List<Factor> factors = new List<Factor>();
             string value = HttpContext.Session.GetString("factors");
-            if(value != null ){
+            if (value != null)
+            {
                 factors = JsonConvert.DeserializeObject<List<Factor>>(value);
             }
             ViewBag.factors = factors;
-            foreach(var factor in factors){
+            foreach (var factor in factors)
+            {
             }
 
             // Direct to Challenge Factor View
@@ -49,7 +51,8 @@ namespace WorkOS.MFAExampleApp.Controllers
             var service = new MfaService();
             var type = Request.Form["type"].ToString();
 
-            if(type == "sms"){
+            if (type == "sms")
+            {
                 var phoneNumber = "+1" + Request.Form["phone_number"].ToString();
                 var options = new EnrollSmsFactorOptions(phoneNumber);
 
@@ -59,17 +62,20 @@ namespace WorkOS.MFAExampleApp.Controllers
                 //Add factor to factors list in session
                 List<Factor> factors = new List<Factor>();
                 string sessionFactors = HttpContext.Session.GetString("factors");
-                if(sessionFactors != null ){
+                if (sessionFactors != null)
+                {
                     factors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
                 }
                 factors.Add(newFactor);
                 HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(factors));
                 //Redirect to Index
                 return RedirectToAction("Index");
-            } else{
+            }
+            else
+            {
 
-            //Type not sms, return error view
-            return View("Error");
+                //Type not sms, return error view
+                return View("Error");
             }
         }
 
@@ -79,7 +85,8 @@ namespace WorkOS.MFAExampleApp.Controllers
             var service = new MfaService();
             var type = Request.Form["type"].ToString();
 
-            if (type == "totp"){
+            if (type == "totp")
+            {
                 var issuer = Request.Form["totp_issuer"].ToString();
                 var user = Request.Form["totp_user"].ToString();
                 var options = new EnrollTotpFactorOptions(issuer, user);
@@ -90,22 +97,26 @@ namespace WorkOS.MFAExampleApp.Controllers
                 //Add factor to factors list in session
                 List<Factor> factors = new List<Factor>();
                 string sessionFactors = HttpContext.Session.GetString("factors");
-                if(sessionFactors != null ){
+                if (sessionFactors != null)
+                {
                     factors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
                 }
                 factors.Add(newFactor);
                 HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(factors));
                 return RedirectToAction("Index");
-            }else{
+            }
+            else
+            {
 
-            //Type not totp, return error view
-            return View("Error");
+                //Type not totp, return error view
+                return View("Error");
             }
         }
 
         [Route("factor_detail/{id?}")]
         [HttpGet]
-        public async Task<IActionResult> FactorDetail(string id){
+        public async Task<IActionResult> FactorDetail(string id)
+        {
             var service = new MfaService();
             List<Factor> factors = new List<Factor>();
             string sessionFactors = HttpContext.Session.GetString("factors");
@@ -118,20 +129,25 @@ namespace WorkOS.MFAExampleApp.Controllers
 
         [Route("ChallengeFactor")]
         [HttpPost]
-        public IActionResult ChallengeFactor(){
+        public IActionResult ChallengeFactor()
+        {
             var service = new MfaService();
             var currentFactor = JsonConvert.DeserializeObject<Factor>(HttpContext.Session.GetString("currentFactor"));
-            if (currentFactor.Type == "sms"){
+            if (currentFactor.Type == "sms")
+            {
                 var message = Request.Form["sms_message"].ToString();
                 HttpContext.Session.SetString("smsMessage", message);
-                var options = new ChallengeSmsFactorOptions(message){
+                var options = new ChallengeSmsFactorOptions(message)
+                {
                     FactorId = currentFactor.Id
                 };
                 var challenge = service.ChallengeFactor(options).Result;
                 HttpContext.Session.SetString("challengeId", challenge.Id);
             }
-            else if (currentFactor.Type == "totp"){
-                var options = new ChallengeFactorOptions(){
+            else if (currentFactor.Type == "totp")
+            {
+                var options = new ChallengeFactorOptions()
+                {
                     FactorId = currentFactor.Id
                 };
                 var challenge = service.ChallengeFactor(options).Result;
@@ -142,11 +158,13 @@ namespace WorkOS.MFAExampleApp.Controllers
 
         [Route("VerifyChallenge")]
         [HttpPost]
-        public async Task<IActionResult> VerifyChallenge (){
+        public async Task<IActionResult> VerifyChallenge()
+        {
             var service = new MfaService();
             var challengeId = HttpContext.Session.GetString("challengeId");
             var code = Request.Form["code"].ToString();
-            var options = new VerifyChallengeOptions(){
+            var options = new VerifyChallengeOptions()
+            {
                 ChallengeId = challengeId,
                 Code = code
             };
