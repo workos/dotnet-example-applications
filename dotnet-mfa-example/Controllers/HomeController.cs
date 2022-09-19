@@ -60,14 +60,14 @@ namespace WorkOS.MFAExampleApp.Controllers
                 var newFactor = await service.EnrollFactor(options);
 
                 //Add factor to factors list in session
-                List<Factor> factors = new List<Factor>();
+                List<Factor> smsFactors = new List<Factor>();
                 string sessionFactors = HttpContext.Session.GetString("factors");
                 if (sessionFactors != null)
                 {
-                    factors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
+                    smsFactors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
                 }
                 factors.Add(newFactor);
-                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(factors));
+                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(smsFactors));
                 //Redirect to Index
                 return RedirectToAction("Index");
             }
@@ -95,14 +95,14 @@ namespace WorkOS.MFAExampleApp.Controllers
                 var newFactor = await service.EnrollFactor(options);
 
                 //Add factor to factors list in session
-                List<Factor> factors = new List<Factor>();
+                List<Factor> totpFactors = new List<Factor>();
                 string sessionFactors = HttpContext.Session.GetString("factors");
                 if (sessionFactors != null)
                 {
-                    factors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
+                    totpFactors  = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
                 }
                 factors.Add(newFactor);
-                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(factors));
+                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(totpFactors ));
                 return RedirectToAction("Index");
             }
             else
