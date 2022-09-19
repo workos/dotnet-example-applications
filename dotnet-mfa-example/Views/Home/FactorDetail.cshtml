@@ -34,7 +34,7 @@
                         </div>
                         <div>
                             <p>Type: <code>@ViewBag.currentFactor.Type</code></p>
-                            <p>Environment: <code>@ViewBag.currentFactor.EnvironmentId</code></p>
+                            <p>Environment: <code>@ViewBag.currentFactor.Id</code></p>
                             <p>Created At: <code>@ViewBag.currentFactor.CreatedAt</code></p>
                             <p>Updated At: <code>@ViewBag.currentFactor.UpdatedAt</code></p>
                             @if(ViewBag.currentFactor.Type == "sms"){
@@ -55,7 +55,7 @@
                             <div class='flex-column'>
                                 @if(ViewBag.currentFactor.Type == "sms"){
                                 <div>
-                                    <input type="text" id="sms_message" name="sms_message" class="text_input"
+                                    <input type="text" id="sms_message" name="sms_message" class="text-input"
                                         placeholder="Custom SMS Message Input {{code}}">
                                 </div>
                                 }

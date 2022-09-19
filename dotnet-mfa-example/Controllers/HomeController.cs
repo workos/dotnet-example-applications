@@ -140,18 +140,18 @@ namespace WorkOS.MFAExampleApp.Controllers
             return View();
         }
 
-        [Route("VerifyFactor")]
+        [Route("VerifyChallenge")]
         [HttpPost]
-        public async Task<IActionResult> VerifyFactor(){
+        public async Task<IActionResult> VerifyChallenge (){
             var service = new MfaService();
             var challengeId = HttpContext.Session.GetString("challengeId");
             var code = Request.Form["code"].ToString();
-            var options = new VerifyFactorOptions(){
+            var options = new VerifyChallengeOptions(){
                 ChallengeId = challengeId,
                 Code = code
             };
-            var response = await service.VerifyFactor(options);
-            if (response is VerifyFactorResponseSuccess successResponse)
+            var response = await service.VerifyChallenge(options);
+            if (response is VerifyChallengeResponseSuccess successResponse)
             {
                 ViewBag.successFactor = response;
                 //Successful response, return to success view

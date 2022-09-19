@@ -97,7 +97,8 @@ namespace WorkOS.SSOExampleApp.Controllers
             ViewBag.Name = profile.FirstName;
 
             // Pass profile to view.
-            ViewBag.Profile = JsonSerializer.Serialize(profile);
+            var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
+            ViewBag.Profile = JsonSerializer.Serialize(profile, serializeOptions);
 
             return View();
 

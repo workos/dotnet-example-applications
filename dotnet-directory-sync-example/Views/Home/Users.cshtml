@@ -42,7 +42,7 @@
                 @if (ViewBag.Users != null){
                     <div class="text-box">
                         <ul>
-                            @foreach (var user in @ViewBag.Users)
+                            @foreach (var user in ViewData["userList"] as List<User>)
                             {
                                 <li>
                                     ID: @user.Id <br />
@@ -58,7 +58,7 @@
                 <div class="card width-40vw"><code>No Users Found</code></div>
                 }
                 <form style="text-align: center">
-                    <input type="button" value="Go Back" onclick="history.back()">
+                    <button class='button' input type="button" value="Go Back" onclick="history.back()">
                 </form>
             </div>
 

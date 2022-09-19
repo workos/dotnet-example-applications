@@ -41,7 +41,7 @@
                 @if (ViewBag.Groups != null) {
                     <div class="text-box">
                         <ul>
-                            @foreach (var group in @ViewBag.Groups)
+                            @foreach (var group in ViewData["groupList"] as List<Group>)
                             {
                                 <li>
                                     Group Name: @group.Name <br />

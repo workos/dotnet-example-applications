@@ -25,16 +25,14 @@
                         Sales</button></a>
             </div>
         </div>
-        <div class="logged_in_div_right">
-            <div class="flex_column">
+        <div class="logged-in-div-right">
+            <div class="flex-column">
                 <div class="flex-column">
                     <div class="card">
                         <h1>User Verified: @ViewBag.successFactor.Valid</h1>
                         <p>Factor ID: @ViewBag.successFactor.Challenge.FactorId</p>
                         <p>Created At: @ViewBag.successFactor.Challenge.CreatedAt</p>
-                        @if (ViewBag.currentFactor.Type == "totp"){
-                            <p>Expires At: @ViewBag.successFactor.Challenge.ExpiresAt</p>
-                        }
+                        <p>Expires At: @ViewBag.successFactor.Challenge.ExpiresAt</p>
                     </div>
                 </div>
                 <a href="/"><button class='button'>Go Back Home</button></a>

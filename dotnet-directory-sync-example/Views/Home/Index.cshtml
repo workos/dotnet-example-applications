@@ -12,13 +12,11 @@
         <hr style="width:100%">
         <a href="/webhooks" class="button width-95 button-outline">Test Webhooks</a>
         <hr style="width:100%">
-        @if (ViewBag.Directories != null) {
-            @foreach (var directory in ViewBag.Directories)
-            {
-                <a href='@string.Format("/directory/{0}", directory.Id)' class="button login-button">
-                @directory.Name | @directory.Id
-                </a>
-            }
+        @foreach (var directory in ViewData["directoryList"] as List<Directory>)
+        {
+            <a href='@string.Format("/directory/{0}", directory.Id)' class="button login-button">
+            @directory.Name | @directory.Id
+            </a>
         }
 
     </div>

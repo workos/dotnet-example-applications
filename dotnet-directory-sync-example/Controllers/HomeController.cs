@@ -24,17 +24,17 @@ namespace WorkOS.DSyncExampleApp.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // Initialize the WorkOS client with your WorkOS API Key.
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
             // Initialize WorkOS Directory Service.
             var directorySync = new DirectorySyncService();
             //Pull and store Directory ID from environment variables.
-            var directoryList = directorySync.ListDirectories();
-            var directories = JObject.Parse(JsonSerializer.Serialize(directoryList))["Data"];
-            ViewBag.Directories = directories;
-
+            List<Directory> directoryList = new List<Directory>();
+            var directories = await directorySync.ListDirectories();
+            directoryList = directories.Data;
+            ViewData["directoryList"] = directoryList;
             return View();
         }
 
@@ -46,7 +46,9 @@ namespace WorkOS.DSyncExampleApp.Controllers
             var directorySync = new DirectorySyncService();
             // Get Directory
             var directory = await directorySync.GetDirectory(id);
-            ViewBag.CurrentDirectory = directory;
+            var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
+            ViewBag.CurrentDirectory = JsonSerializer.Serialize(directory, serializeOptions);
+            ViewBag.CurrentDirectoryId = id;
 
             return View();
 
@@ -63,9 +65,11 @@ namespace WorkOS.DSyncExampleApp.Controllers
                 Directory = id,
             };
             // API Call to list all users within our specified directory.
-            var userList = await directorySync.ListUsers(options);
+            var users = await directorySync.ListUsers(options);
             // Parse response and send to view.
-            var users = JObject.Parse(JsonSerializer.Serialize(userList))["Data"];
+            List<User> userList = new List<User>();
+            userList = users.Data;
+            ViewData["userList"] = userList;
             ViewBag.Users = users;
 
             return View();
@@ -82,11 +86,12 @@ namespace WorkOS.DSyncExampleApp.Controllers
                 Directory = id,
             };
             // API Call to list all groups within our specified directory.
-            var groupList = await directorySync.ListGroups(groupsOptions);
+            var groups = await directorySync.ListGroups(groupsOptions);
             // Parse response and send to view.
-            var groups = JObject.Parse(JsonSerializer.Serialize(groupList))["Data"];
+            List<Group> groupList = new List<Group>();
+            groupList = groups.Data;
+            ViewData["groupList"] = groupList;
             ViewBag.Groups = groups;
-
             return View();
 
         }
