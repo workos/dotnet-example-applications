@@ -99,10 +99,10 @@ namespace WorkOS.MFAExampleApp.Controllers
                 string sessionFactors = HttpContext.Session.GetString("factors");
                 if (sessionFactors != null)
                 {
-                    totpFactors  = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
+                    totpFactors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
                 }
                 totpFactors.Add(newFactor);
-                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(totpFactors ));
+                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(totpFactors));
                 return RedirectToAction("Index");
             }
             else
