@@ -66,7 +66,7 @@ namespace WorkOS.MFAExampleApp.Controllers
                 {
                     smsFactors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
                 }
-                factors.Add(newFactor);
+                smsFactors.Add(newFactor);
                 HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(smsFactors));
                 //Redirect to Index
                 return RedirectToAction("Index");
@@ -99,10 +99,10 @@ namespace WorkOS.MFAExampleApp.Controllers
                 string sessionFactors = HttpContext.Session.GetString("factors");
                 if (sessionFactors != null)
                 {
-                    totpFactors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
+                    totpFactors  = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
                 }
-                factors.Add(newFactor);
-                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(totpFactors));
+                totpFactors.Add(newFactor);
+                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(totpFactors ));
                 return RedirectToAction("Index");
             }
             else

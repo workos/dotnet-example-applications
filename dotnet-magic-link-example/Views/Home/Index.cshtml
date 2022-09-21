@@ -3,27 +3,24 @@
 }
 
 <body class="container-login">
-    <div class="logged-in-nav">
-        <div class='flex-column'>
+    <div class='flex-column'>
+        <div class="flex heading-div">
             <img src="~/images/workos-logo-with-text.png" alt="workos logo">
         </div>
+
+        @using (Html.BeginForm("passwordless", "home"))
+        {
+            <form method="post" >
+                <h2>Magic Link Example App</h2>
+                <div class='flex-column'>
+                    <div>
+                        <input type="text" id="email" name="email" class="text-input">
+                    </div>
+                    <div>
+                        <button type="submit" class="button">Submit Email for Magic Link</button>
+                    </div>
+                </div>
+            </form>
+        }
     </div>
-
-    @using (Html.BeginForm("passwordless", "home"))
-    {
-    <form method="post" >
-        <fieldset>
-            <h2>Magic Link Example App</h2>
-           <div class='flex-column'>
-                <div>
-                    <input type="text" id="email" name="email" class="text-input">
-                </div>
-                <div>
-                    <button type="submit" class="button">Submit Email for Magic Link</button>
-                </div>
-            </div>
-        </fieldset>
-    </form>
-    }
-
 </body>
