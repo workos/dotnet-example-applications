@@ -39,7 +39,8 @@
             <div class="flex-column">
                 <h2>Raw Users Object Details</h2>
 
-                @if (ViewBag.Users != null){
+                @if (ViewBag.Users != null)
+                {
                     <div class="text-box">
                         <ul>
                             @foreach (var user in ViewData["userList"] as List<User>)
@@ -54,11 +55,13 @@
                         </ul>
                     </div>
                 }
-                else{
-                <div class="card width-40vw"><code>No Users Found</code></div>
+                else
+                {
+                    <div class="card width-40vw"><code>No Users Found</code></div>
                 }
                 <form style="text-align: center">
-                    <input type="button" value="Go Back" onclick="history.back()">
+                    <input class="button button-sm button-outline" type="button" value="Go Back"
+                        onclick="history.back()">
                 </form>
             </div>
 
