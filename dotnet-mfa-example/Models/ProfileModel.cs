@@ -5,6 +5,6 @@ namespace WorkOS.MFAExampleApp.Models
 {
     public class ProfileModel
     {
-        public Factor[] factors {get; set;}
+        public Factor[] factors { get; set; }
     }
 }

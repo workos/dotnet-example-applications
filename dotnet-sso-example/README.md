@@ -4,10 +4,10 @@ An example application demonstrating how SSO works with WorkOS and .NET.
 
 ## Clone and Install
 
-Clone this repo and install dependencies:
+Clone this repository and install dependencies:
 
 ```sh
-git clone https://github.com/workos-inc/dotnet-sso-example.git && cd dotnet-sso-example && dotnet build
+git clone https://github.com/workos/dotnet-example-applications.git && cd dotnet-sso-example && dotnet build
 ```
 
 ## Configure your environment
@@ -17,7 +17,7 @@ Set these as environment variables in the Properties/launchSettings.json file,
 labeled `WORKOS_API_KEY` and `WORKOS_CLIENT_ID`,
 2. Create an SSO Connection in the WorkOS Dashboard.
 3. Add `https://localhost:5001/Home/Callback` as a Redirect URI in the Configuration section of the Dashboard.
-4. Update line 43 of `HomeController.cs` with the Connection domain (or Connection ID).
+4. Update line 62 of `HomeController.cs` with the Connection domain (or Connection ID).
 
 ## Run the server and log in using SSO
 

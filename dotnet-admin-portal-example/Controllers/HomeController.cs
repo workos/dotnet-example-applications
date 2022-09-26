@@ -27,26 +27,61 @@ namespace WorkOS.AdminPortalExampleApp.Controllers
             return View();
         }
 
-        [HttpPost("provision")]
+        [Route("provision")]
+        [HttpPost]
         public async Task<IActionResult> Provision()
         {
             // Initialize the WorkOS client with your WorkOS API Key.
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
-            // Initialize Portal Service.
-            var portalService = new PortalService();
+            // Initialize Organziation Service.
+            var organizationService = new OrganizationsService();
 
-            // Pull Organization ID from user input and pass into API call options.
-            var OrganizationId = Request.Form["OrganizationId"].ToString();
+            // Pull Organization name and domains.
+            var OrganizationName = Request.Form["org"].ToString();
+            var DomainString = Request.Form["domain"].ToString();
+            var OrganizationDomains = DomainString.Split(' ');
+            var options = new CreateOrganizationOptions
+            {
+                Name = OrganizationName,
+                Domains = OrganizationDomains,
+            };
+
+            // Make API call to generate new organization.
+            var newOrganization = await organizationService.CreateOrganization(options);
+            TempData["OrganizationId"] = newOrganization.Id;
+            Console.WriteLine("Created new org!");
+
+            // Redirect user to Admin Portal link.
+            return View("LoggedIn");
+        }
+
+        [Route("sso")]
+        [HttpPost]
+        public async Task<IActionResult> AdminPortalSSO()
+        {
+            var portalService = new PortalService();
+            var organizationId = TempData["OrganizationId"].ToString();
             var options = new GenerateLinkOptions
             {
                 Intent = Intent.SSO,
-                Organization = OrganizationId,
+                Organization = organizationId,
             };
-
-            // Make API call to generate Admin Portal session link.
             var portalLink = await portalService.GenerateLink(options);
+            return Redirect(portalLink);
+        }
 
-            // Redirect user to Admin Portal link.
+        [Route("dsync")]
+        [HttpPost]
+        public async Task<IActionResult> AdminPortalDSync()
+        {
+            var portalService = new PortalService();
+            var organizationId = TempData["OrganizationId"].ToString();
+            var options = new GenerateLinkOptions
+            {
+                Intent = Intent.DSync,
+                Organization = organizationId,
+            };
+            var portalLink = await portalService.GenerateLink(options);
             return Redirect(portalLink);
         }
 

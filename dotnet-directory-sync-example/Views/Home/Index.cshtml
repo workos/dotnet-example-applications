@@ -2,18 +2,22 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">WorkOS .NET Example Directory Sync App</h1>
-    <h2>Directory @ViewBag.Id</h2>
-</div>
+<body class="container-login">
+    <div class='flex-column'>
+        <div class="flex heading-div">
+            <img src="~/images/workos-logo-with-text.png" alt="workos logo">
+        </div>
 
-<table style="margin-left: auto; margin-right: auto">
-    <tr>
-        <td style="width: 500px">
-            <h3><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Users">View Directory Users</a></h3>
-        </td>
-        <td style="width: 500px">
-            <h3><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Groups">View Directory Groups</a></h3>
-        </td>
-    </tr>
-</table>
+        <h2>.NET Directory Sync Example App</h2>
+        <hr style="width:100%">
+        <a href="/webhooks" class="button width-95 button-outline">Test Webhooks</a>
+        <hr style="width:100%">
+        @foreach (var directory in ViewData["directoryList"] as List<Directory>)
+        {
+            <a href='@string.Format("/directory/{0}", directory.Id)' class="button login-button">
+            @directory.Name | @directory.Id
+            </a>
+        }
+
+    </div>
+</body>

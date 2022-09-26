@@ -10,7 +10,7 @@ using WorkOS;
 
 namespace WorkOS
 {
-    namespace DSyncExampleApp
+    namespace MFAExampleApp
     {
         public class Program
         {
@@ -23,8 +23,7 @@ namespace WorkOS
                 Host.CreateDefaultBuilder(args)
                     .ConfigureWebHostDefaults(webBuilder =>
                     {
-                        webBuilder.UseStartup<Startup>()
-                        .UseWebRoot("public");
+                        webBuilder.UseStartup<Startup>();
                     });
         }
     }
