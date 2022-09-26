@@ -31,15 +31,16 @@
                 <div class="flex">
                     <div class="factor-card flex-column space-evenly">
                         <h2>Enroll SMS Factor</h2>
-                        @using (Html.BeginForm("EnrollSmsFactor","Home", FormMethod.Post)){
+                        @using (Html.BeginForm("EnrollSmsFactor", "Home", FormMethod.Post))
+                        {
                             <div>
                                 <div class="flex">
-                                    <input class="text_input" type="text" id="phone_number" name="phone_number"
-                                        placeholder="Phone Number" required>
+                                    <input class="text-input" type="text" id="phone_number" name="phone_number"
+                                    placeholder="Phone Number" required>
                                 </div>
                                 <div class="flex">
                                     <button type="submit" name="type" value="sms"
-                                        class="button button-outline button-sm">Enroll New SMS Factor
+                                    class="button button-outline button-sm">Enroll New SMS Factor
                                     </button>
                                 </div>
                             </div>
@@ -48,20 +49,21 @@
 
                     <div class="factor-card flex-column space-evenly">
                         <h2>Enroll SMS Factor</h2>
-                        @using (Html.BeginForm("EnrollTotpFactor","Home", FormMethod.Post)){
+                        @using (Html.BeginForm("EnrollTotpFactor", "Home", FormMethod.Post))
+                        {
                             <div class="flex-column">
                                 <div class="flex">
-                                    <input class="text_input" type="text" id="totp_issuer" name="totp_issuer"
-                                        placeholder="TOTP Issuer" required>
+                                    <input class="text-input" type="text" id="totp_issuer" name="totp_issuer"
+                                    placeholder="TOTP Issuer" required>
                                 </div>
                                 <div class="flex">
-                                    <input class="text_input" type="text" id="totp_user" name="totp_user"
-                                        placeholder="User Email" required>
+                                    <input class="text-input" type="text" id="totp_user" name="totp_user"
+                                    placeholder="User Email" required>
                                 </div>
                             </div>
                             <div class="flex">
                                 <button type="submit" name="type" value="totp"
-                                    class="button button-outline button-sm">Enroll
+                                class="button button-outline button-sm">Enroll
                                     New TOTP Factor</button>
                             </div>
                         }
@@ -71,7 +73,8 @@
 
 
                 <h2>MFA Factors List</h2>
-                @if (ViewBag.factors != null) {
+                @if (ViewBag.factors != null)
+                {
                     @foreach (var factor in ViewBag.factors)
                     {
                         <a href='@string.Format("/factor_detail/{0}", factor.Id)' class="button login_button">
