@@ -307,3 +307,8 @@ li.even {
   margin-top: 5px;
   margin-bottom: 20px;
 }
+
+.qr-code {
+  width: 7vw;
+  max-width: 100px;
+}

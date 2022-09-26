@@ -36,9 +36,6 @@ namespace WorkOS.MFAExampleApp.Controllers
                 factors = JsonConvert.DeserializeObject<List<Factor>>(value);
             }
             ViewBag.factors = factors;
-            foreach (var factor in factors)
-            {
-            }
 
             // Direct to Challenge Factor View
             return View();
@@ -93,6 +90,7 @@ namespace WorkOS.MFAExampleApp.Controllers
 
                 // enroll totp factor
                 var newFactor = await service.EnrollFactor(options);
+                Console.WriteLine("This is the new totp factor: " + JsonConvert.SerializeObject(newFactor));
 
                 //Add factor to factors list in session
                 List<Factor> totpFactors = new List<Factor>();
@@ -121,7 +119,7 @@ namespace WorkOS.MFAExampleApp.Controllers
             List<Factor> factors = new List<Factor>();
             string sessionFactors = HttpContext.Session.GetString("factors");
             factors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
-            var selectedFactor = await service.GetFactor(id);
+            var selectedFactor = factors.Find(sFactor => sFactor.Id.Contains(id));
             HttpContext.Session.SetString("currentFactor", JsonConvert.SerializeObject(selectedFactor));
             ViewBag.currentFactor = selectedFactor;
             return View(nameof(FactorDetail));
