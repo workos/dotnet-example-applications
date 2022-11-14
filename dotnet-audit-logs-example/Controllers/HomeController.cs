@@ -37,7 +37,8 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             ViewBag.OrganizationId = "";
             var organizationId = HttpContext.Session.GetString("organization_id");
             var organizationName = HttpContext.Session.GetString("organization_name");
-            if (organizationId != null & organizationName != null){
+            if (organizationId != null & organizationName != null)
+            {
                 ViewData["OrgId"] = organizationId;
                 ViewData["OrgName"] = organizationName;
                 return View("SendEvents");
@@ -54,7 +55,8 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             // Recieve event type.
             var eventtype = Request.Form["event"].ToString();
             AuditLogEvent eventPayload = null;
-            switch (eventtype){
+            switch (eventtype)
+            {
                 case "user_signed_in":
                     eventPayload = AuditLogMockEvents.UserSignedIn;
                     break;
@@ -91,8 +93,8 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             ViewData["OrgId"] = org.Id;
             ViewData["OrgName"] = org.Name;
             // Set the org name and id in the session.
-            HttpContext.Session.SetString("organization_id",org.Id);
-            HttpContext.Session.SetString("organization_name",org.Name);
+            HttpContext.Session.SetString("organization_id", org.Id);
+            HttpContext.Session.SetString("organization_name", org.Name);
             return View("SendEvents");
         }
 
@@ -120,7 +122,7 @@ namespace WorkOS.AuditLogExampleApp.Controllers
                 RangeEnd = DateTime.Now,
             };
             var auditLogExport = await auditLogs.CreateExport(options);
-            HttpContext.Session.SetString("export_id",auditLogExport.Id);
+            HttpContext.Session.SetString("export_id", auditLogExport.Id);
             //Set ViewData for orgId and orgName.
             ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
             ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
@@ -142,8 +144,8 @@ namespace WorkOS.AuditLogExampleApp.Controllers
         public IActionResult Logout()
         {
             //Set ViewData for orgId and orgName.
-            HttpContext.Session.SetString("organization_id","");
-            HttpContext.Session.SetString("organization_name","");
+            HttpContext.Session.SetString("organization_id", "");
+            HttpContext.Session.SetString("organization_name", "");
             return View("Index");
         }
 
