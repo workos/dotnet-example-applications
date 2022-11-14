@@ -1,3 +1,4 @@
+/* stylelint-disable */
 body {
   font-family: Inter, sans-serif;
   background-color: #f9f9fb;
@@ -400,3 +401,4 @@ pre.prettyprint {
   from {bottom: 30px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
 }
+/* stylelint-enable */
