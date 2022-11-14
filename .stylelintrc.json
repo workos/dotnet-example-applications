@@ -1,4 +1,3 @@
 {
-    "extends": "stylelint-config-standard",
-    "ignoreFiles": ["dotnet-audit-logs-example/**/*.css", "dotnet-audit-logs-example/**/*.js"]
+    "extends": "stylelint-config-standard"
 }
