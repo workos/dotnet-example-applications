@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WorkOS;
 
-namespace WorkOS.MFAExampleApp
+namespace WorkOS.DSyncExampleApp
 {
     public class Startup
     {

@@ -10,7 +10,7 @@ using WorkOS;
 
 namespace WorkOS
 {
-    namespace AdminPortalExampleApp
+    namespace MagicLinkExampleApp
     {
         public class Program
         {
