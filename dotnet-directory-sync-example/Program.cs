@@ -10,7 +10,7 @@ using WorkOS;
 
 namespace WorkOS
 {
-    namespace MFAExampleApp
+    namespace DSyncExampleApp
     {
         public class Program
         {

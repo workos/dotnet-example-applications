@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WorkOS;
 
-namespace WorkOS.AdminPortalExampleApp
+namespace WorkOS.MagicLinkExampleApp
 {
     public class Startup
     {
