@@ -5,7 +5,6 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 
-/* stylelint-disable */
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -10037,6 +10036,5 @@ a.text-dark:hover, a.text-dark:focus {
     border-color: #dee2e6;
   }
 }
-/* stylelint-enable */
 
 /*# sourceMappingURL=bootstrap.css.map */
