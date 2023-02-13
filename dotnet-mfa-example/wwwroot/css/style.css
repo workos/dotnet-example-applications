@@ -37,8 +37,16 @@ h1 {
 .flex-column {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
+}
+
+.factor-card {
+  border: 1px solid #555555;
+  border-radius: 10px;
+  width: 20vw;
+  margin: 0px 15px 0px 15px;
+  padding: 25px;
 }
 
 .space-between {
@@ -294,12 +302,12 @@ li.even {
 }
 
 .text-input {
-  border: 1px solid #555;
+  border: 1px solid #555555;
   border-radius: 10px;
-  margin: 20px 0 7px;
+  margin: 20px 0px 7px 0px;
   padding: 5px;
   height: 35px;
-  width: 25vw;
+  width: 18vw;
   text-align: center;
 }
 
@@ -311,4 +319,8 @@ li.even {
 .qr-code {
   width: 7vw;
   max-width: 100px;
+}
+
+.m-top-20 {
+  margin-top: 20px;
 }
