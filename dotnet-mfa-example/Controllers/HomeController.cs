@@ -115,27 +115,13 @@ namespace WorkOS.MFAExampleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> FactorDetail(string id)
         {
-            // Console.WriteLine("factor_detail route hit");
-            // var service = new MfaService();
-            // List<Factor> factors = new List<Factor>();
-            // string sessionFactors = HttpContext.Session.GetString("factors");
-            // factors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
-            // var selectedFactor = factors.Find(sFactor => sFactor.Id.Contains(id));
-            // HttpContext.Session.SetString("currentFactor", JsonConvert.SerializeObject(selectedFactor));
-            // ViewBag.currentFactor = selectedFactor;
-            // return View(nameof(FactorDetail));
-
+            Console.WriteLine("factor_detail route hit");
             var service = new MfaService();
-            var selectedFactor = await service.GetFactor(id);
-            Console.WriteLine("This is the factor that I got back by API: " + JsonConvert.SerializeObject(selectedFactor));
             List<Factor> factors = new List<Factor>();
-
             string sessionFactors = HttpContext.Session.GetString("factors");
             factors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
-            var selectedFactorByLocal = factors.Find(sFactor => sFactor.Id.Contains(id));
-            Console.WriteLine("This is the factor that I got back locally: " + selectedFactorByLocal);
-
-            // HttpContext.Session.SetString("currentFactor", JsonConvert.SerializeObject(selectedFactor));
+            var selectedFactor = factors.Find(sFactor => sFactor.Id.Contains(id));
+            HttpContext.Session.SetString("currentFactor", JsonConvert.SerializeObject(selectedFactor));
             ViewBag.currentFactor = selectedFactor;
             return View(nameof(FactorDetail));
         }
