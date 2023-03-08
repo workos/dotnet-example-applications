@@ -49,7 +49,10 @@ namespace WorkOS.DSyncExampleApp.Controllers
             var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
             ViewBag.CurrentDirectory = JsonSerializer.Serialize(directory, serializeOptions);
             ViewBag.CurrentDirectoryId = id;
-
+            ViewBag.CurrentDirectoryName = JsonSerializer.Serialize(directory.Name, serializeOptions);
+            ViewBag.CurrentDirectoryType = JsonSerializer.Serialize(directory.Type, serializeOptions);
+            ViewBag.CurrentDirectoryDomain = JsonSerializer.Serialize(directory.Domain, serializeOptions);
+            ViewBag.CurrentDirectoryCreatedAt = JsonSerializer.Serialize(directory.CreatedAt, serializeOptions);
             return View();
 
         }
