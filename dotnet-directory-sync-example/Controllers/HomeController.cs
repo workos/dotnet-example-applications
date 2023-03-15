@@ -78,6 +78,34 @@ namespace WorkOS.DSyncExampleApp.Controllers
             return View();
         }
 
+        [Route("group/{id?}/{directoryId?}")]
+        public async Task<IActionResult> Group(string id, string directoryId)
+        {
+            // Initialize WorkOS Directory Service.
+            var directorySync = new DirectorySyncService();
+            // Set Directory ID as option for our API call
+            var directId = directoryId;
+            var directory = await directorySync.GetDirectory(directId);
+            var directoryGroupId = id;
+            // API Call to list all users within our specified directory.
+            var directoryGroup = await directorySync.GetGroup(directoryGroupId);
+            // Parse response and send to view.
+            // List<Group> groupList = new List<Group>();
+            // groupList = directoryGroup;
+            var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
+            ViewData["directory"] = directory;
+            ViewBag.Directory = directory;
+            ViewBag.DirectoryName = directory.Name;
+            ViewData["group"] = directoryGroup;
+            ViewBag.GroupName = directoryGroup.Name;
+            ViewBag.Group = JsonSerializer.Serialize(directoryGroup, serializeOptions);
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Directory);
+            Console.WriteLine(json);
+
+            return View();
+        }
+
         [Route("groupsandusers/{id?}")]
         public async Task<IActionResult> Groups(string id)
         {
@@ -99,6 +127,8 @@ namespace WorkOS.DSyncExampleApp.Controllers
             ViewData["groupList"] = groupList;
             ViewBag.Groups = groups;
             ViewBag.CurrentDirectoryName = JsonSerializer.Serialize(directory.Name, serializeOptions);
+            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["groupList"]);
+            // Console.WriteLine(json);
 
             // User logic
             var userOptions = new ListUsersOptions

@@ -34,12 +34,12 @@
             <div class="logged_in_div_right">
                 <div class="flex_column">
                     <h2>
-                        <%=rawGroup.name%> from <%=directory.name%>
+                         @ViewBag.GroupName from @ViewBag.DirectoryName
                     </h2>
                     <div class="text_box">
                         <pre>
                             <code class="prettyprint">
-                                <%=group%>
+                                @ViewBag.Group
                             </code>
                         </pre>
                     </div>

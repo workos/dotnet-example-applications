@@ -47,9 +47,12 @@
                                     <ul>
                                         @foreach (var group in ViewData["groupList"] as List<Group>)
                                         {
-                                            <li>
-                                                @group.Name
-                                            </li>
+                                            <a href='@string.Format("/group/{0}/{1}", @group.Id, @group.DirectoryId)'>
+                                                <li>
+                                                    @group.Name
+                                                </li>
+                                            </a>
+
                                         }
                                     </ul>
                                 </div>
@@ -68,9 +71,11 @@
                                     <ul>
                                         @foreach (var user in ViewData["userList"] as List<User>)
                                         {
-                                            <li>
-                                                @user.FirstName @user.LastName, @user.Username
-                                            </li>
+                                            <a>
+                                               <li>
+                                                    @user.FirstName @user.LastName, @user.Username
+                                                </li>
+                                            </a>
                                         }
                                     </ul>
                                 </div>
