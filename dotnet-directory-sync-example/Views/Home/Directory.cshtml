@@ -58,7 +58,7 @@
                     <div class="flex_column">
                         <p>⚡️ See Users and Groups in this Directory ⚡️</p>
                         <div class="flex">
-                            <a href="/directory/<%=directory.id%>/usersgroups"><button class='button'>Users and
+                            <a href='@string.Format("/groupsandusers/{0}", ViewBag.CurrentDirectoryId)'><button class='button'>Users and
                                     Groups</button></a>
                             <a href="javascript:history.back()"><button class='button'>Back</button></a>
                         </div>
@@ -70,4 +70,3 @@
         console.log(@ViewBag.CurrentDirectory)
         </script>
 </body>
-

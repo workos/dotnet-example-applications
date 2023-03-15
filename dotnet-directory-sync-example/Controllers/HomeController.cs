@@ -78,25 +78,42 @@ namespace WorkOS.DSyncExampleApp.Controllers
             return View();
         }
 
-        [Route("group/{id?}")]
+        [Route("groupsandusers/{id?}")]
         public async Task<IActionResult> Groups(string id)
         {
+            var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
             // Initialize WorkOS Directory Service.
             var directorySync = new DirectorySyncService();
+            // Grab directory to populate view details
+            var directory = await directorySync.GetDirectory(id);
             // Set Directory ID as option for our API call.
-            var groupsOptions = new ListGroupsOptions
+            var groupOptions = new ListGroupsOptions
             {
                 Directory = id,
             };
             // API Call to list all groups within our specified directory.
-            var groups = await directorySync.ListGroups(groupsOptions);
+            var groups = await directorySync.ListGroups(groupOptions);
             // Parse response and send to view.
             List<Group> groupList = new List<Group>();
             groupList = groups.Data;
             ViewData["groupList"] = groupList;
             ViewBag.Groups = groups;
-            return View();
+            ViewBag.CurrentDirectoryName = JsonSerializer.Serialize(directory.Name, serializeOptions);
 
+            // User logic
+            var userOptions = new ListUsersOptions
+            {
+                Directory = id,
+            };
+            var users = await directorySync.ListUsers(userOptions);
+            // Parse response and send to view.
+            List<User> userList = new List<User>();
+            userList = users.Data;
+            ViewData["userList"] = userList;
+            ViewBag.Users = users;
+            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["userList"]);
+            // Console.WriteLine(json);
+            return View();
         }
 
 

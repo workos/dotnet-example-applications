@@ -289,7 +289,7 @@ a:visited {
   text-decoration: none;
 }
 
-li.even {
+li:nth-child(odd) {
   background-color: rgb(228, 228, 228);
 }
 
