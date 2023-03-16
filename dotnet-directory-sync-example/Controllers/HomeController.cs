@@ -58,7 +58,7 @@ namespace WorkOS.DSyncExampleApp.Controllers
         }
 
         [Route("user/{id?}")]
-        public async Task<IActionResult> Users(string id)
+        public async Task<IActionResult> User(string id)
         {
             // Initialize WorkOS Directory Service.
             var directorySync = new DirectorySyncService();
