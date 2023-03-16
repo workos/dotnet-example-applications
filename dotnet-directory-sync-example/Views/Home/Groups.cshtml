@@ -71,7 +71,7 @@
                                     <ul>
                                         @foreach (var user in ViewData["userList"] as List<User>)
                                         {
-                                            <a>
+                                            <a href='@string.Format("/user/{0}/{1}", @user.Id, @user.DirectoryId)'>
                                                <li>
                                                     @user.FirstName @user.LastName, @user.Username
                                                 </li>

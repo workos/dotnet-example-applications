@@ -57,23 +57,26 @@ namespace WorkOS.DSyncExampleApp.Controllers
 
         }
 
-        [Route("user/{id?}")]
-        public async Task<IActionResult> User(string id)
+        [Route("user/{id?}/{directoryId}")]
+        public async Task<IActionResult> User(string id, string directoryId)
         {
             // Initialize WorkOS Directory Service.
             var directorySync = new DirectorySyncService();
             // Set Directory ID as option for our API call
-            var options = new ListUsersOptions
-            {
-                Directory = id,
-            };
-            // API Call to list all users within our specified directory.
-            var users = await directorySync.ListUsers(options);
-            // Parse response and send to view.
-            List<User> userList = new List<User>();
-            userList = users.Data;
-            ViewData["userList"] = userList;
-            ViewBag.Users = users;
+            var directId = directoryId;
+            var directory = await directorySync.GetDirectory(directId);
+            var userId = id;
+            var user = await directorySync.GetUser(userId);
+            var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
+            ViewData["directory"] = directory;
+            ViewBag.Directory = directory;
+            ViewBag.DirectoryName = directory.Name;
+            ViewData["user"] = user;
+            ViewBag.FirstName = user.FirstName;
+            ViewBag.LastName = user.LastName;
+            ViewBag.User = JsonSerializer.Serialize(user, serializeOptions);
+
+
 
             return View();
         }
