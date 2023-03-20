@@ -35,6 +35,10 @@ namespace WorkOS.DSyncExampleApp.Controllers
             var directories = await directorySync.ListDirectories();
             directoryList = directories.Data;
             ViewData["directoryList"] = directoryList;
+
+            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(directories);
+            // Console.WriteLine(json);
+
             return View();
         }
 
