@@ -27,12 +27,21 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        [Route("/")]
+        public async Task<IActionResult> Index()
         {
             // Initialize the WorkOS client with your WorkOS API Key.
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
-            // Initialize WorkOS Audit Logs Service.
+            // Initialize WorkOS Audit Logs and Organization Service.
             var auditLogs = new AuditLogsService();
+            var organizationsService = new OrganizationsService();
+            var options = new ListOrganizationsOptions {
+                Domains =
+                    new string[] {
+                        "foo-corp.com",
+                    },
+            };
+            var organizationList = await organizationsService.ListOrganizations();
             //Check if an organization is already established in session.
             ViewBag.OrganizationId = "";
             var organizationId = HttpContext.Session.GetString("organization_id");
@@ -44,6 +53,10 @@ namespace WorkOS.AuditLogExampleApp.Controllers
                 return View("SendEvents");
             }
             //  No organization selected, return to index.
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(organizationList);
+            Console.WriteLine(json);
+
+
             return View();
         }
 
