@@ -56,7 +56,7 @@ namespace WorkOS.DSyncExampleApp.Controllers
 
             ViewData["directoryList"] = directories.Data;
             ViewData["before"] = directories.ListMetadata.Before;
-            ViewData["after"] = directories.ListMetadata.After
+            ViewData["after"] = directories.ListMetadata.After;
 
             return View();
         }
