@@ -27,44 +27,44 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             _logger = logger;
         }
 
+        // [Route("/{cursor?}/{type?}")]
+        // public async Task<IActionResult> Index(string cursor, string type)
+        // {
+        //     // Initialize the WorkOS client with your WorkOS API Key.
+        //     WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
+        //     // Initialize WorkOS Directory Service.
+        //     var directorySync = new DirectorySyncService();
+        //     //Pull and store Directory ID from environment variables.
+        //     var cursorId = cursor;
+        //     var cursorType = type;
+        //     var options = new ListDirectoriesOptions {
+        //         Limit = 5
+        //     };
+        //     if (cursorType == "before")
+        //     {
+        //         options = new ListDirectoriesOptions {
+        //             Limit = 5,
+        //             Before = cursorId,
+        //         };
+        //     }
+        //     else if (cursorType == "after")
+        //     {
+        //         options = new ListDirectoriesOptions {
+        //             Limit = 5,
+        //             After = cursorId,
+        //         };
+        //     }
+        //     List<Directory> directoryList = new List<Directory>();
+        //     var directories = await directorySync.ListDirectories(options);
+
+        //     ViewData["directoryList"] = directories.Data;
+        //     ViewData["before"] = directories.ListMetadata.Before;
+        //     ViewData["after"] = directories.ListMetadata.After;
+
+        //     return View();
+        // }
+
         [Route("/{cursor?}/{type?}")]
-        public async Task<IActionResult> Index(string cursor, string type)
-        {
-            // Initialize the WorkOS client with your WorkOS API Key.
-            WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
-            // Initialize WorkOS Directory Service.
-            var directorySync = new DirectorySyncService();
-            //Pull and store Directory ID from environment variables.
-            var cursorId = cursor;
-            var cursorType = type;
-            var options = new ListDirectoriesOptions {
-                Limit = 5
-            };
-            if (cursorType == "before")
-            {
-                options = new ListDirectoriesOptions {
-                    Limit = 5,
-                    Before = cursorId,
-                };
-            }
-            else if (cursorType == "after")
-            {
-                options = new ListDirectoriesOptions {
-                    Limit = 5,
-                    After = cursorId,
-                };
-            }
-            List<Directory> directoryList = new List<Directory>();
-            var directories = await directorySync.ListDirectories(options);
-
-            ViewData["directoryList"] = directories.Data;
-            ViewData["before"] = directories.ListMetadata.Before;
-            ViewData["after"] = directories.ListMetadata.After;
-
-            return View();
-        }
-
-        [Route("/{cursor?}/{type?")]
         public async Task<IActionResult> Index(string cursor, string type)
         {
             // Initialize the WorkOS client with your WorkOS API Key.
@@ -91,21 +91,15 @@ namespace WorkOS.AuditLogExampleApp.Controllers
                     After = cursorId,
                 };
             }
-            var organizationList = await organizationsService.ListOrganizations();
+            var organizations = await organizationsService.ListOrganizations(options);
             //Check if an organization is already established in session.
-            ViewBag.OrganizationId = "";
-            var organizationId = HttpContext.Session.GetString("organization_id");
-            var organizationName = HttpContext.Session.GetString("organization_name");
-            if (organizationId != null & organizationName != null)
-            {
-                ViewData["OrgId"] = organizationId;
-                ViewData["OrgName"] = organizationName;
-                return View("SendEvents");
-            }
-            //  No organization selected, return to index.
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(organizationList);
-            Console.WriteLine(json);
 
+            ViewData["organizationList"] = organizations.Data;
+            ViewData["before"] = organizations.ListMetadata.Before;
+            ViewData["after"] = organizations.ListMetadata.After;
+
+            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["before"]);
+            // Console.WriteLine(json);
 
             return View();
         }
