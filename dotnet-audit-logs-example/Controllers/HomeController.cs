@@ -27,43 +27,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             _logger = logger;
         }
 
-        // [Route("/{cursor?}/{type?}")]
-        // public async Task<IActionResult> Index(string cursor, string type)
-        // {
-        //     // Initialize the WorkOS client with your WorkOS API Key.
-        //     WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
-        //     // Initialize WorkOS Directory Service.
-        //     var directorySync = new DirectorySyncService();
-        //     //Pull and store Directory ID from environment variables.
-        //     var cursorId = cursor;
-        //     var cursorType = type;
-        //     var options = new ListDirectoriesOptions {
-        //         Limit = 5
-        //     };
-        //     if (cursorType == "before")
-        //     {
-        //         options = new ListDirectoriesOptions {
-        //             Limit = 5,
-        //             Before = cursorId,
-        //         };
-        //     }
-        //     else if (cursorType == "after")
-        //     {
-        //         options = new ListDirectoriesOptions {
-        //             Limit = 5,
-        //             After = cursorId,
-        //         };
-        //     }
-        //     List<Directory> directoryList = new List<Directory>();
-        //     var directories = await directorySync.ListDirectories(options);
-
-        //     ViewData["directoryList"] = directories.Data;
-        //     ViewData["before"] = directories.ListMetadata.Before;
-        //     ViewData["after"] = directories.ListMetadata.After;
-
-        //     return View();
-        // }
-
         [Route("/{cursor?}/{type?}")]
         public async Task<IActionResult> Index(string cursor, string type)
         {
@@ -139,20 +102,20 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             return View();
         }
 
-        [Route("/set_org")]
-        [HttpPost]
-        public async Task<IActionResult> SetOrganization()
+        [Route("/set_org/{orgId?}")]
+        public async Task<IActionResult> SendEvents(string orgId)
         {
             // Initialize WorkOS Organization Service.
             var organizationsService = new OrganizationsService();
             // Get the organization.
-            var org = await organizationsService.GetOrganization(Request.Form["org"].ToString());
+            var organizationId = orgId;
+            var org = await organizationsService.GetOrganization(organizationId);
             ViewData["OrgId"] = org.Id;
             ViewData["OrgName"] = org.Name;
             // Set the org name and id in the session.
             HttpContext.Session.SetString("organization_id", org.Id);
             HttpContext.Session.SetString("organization_name", org.Name);
-            return View("SendEvents");
+            return View();
         }
 
         [Route("/export_events")]
