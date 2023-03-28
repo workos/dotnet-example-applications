@@ -5,7 +5,7 @@
 <body class="container_success">
         <div class="logged_in_div_left flex_column">
             <div class="flex logged_in_div_left_title">
-                <div><h2><%=orgName%></h2></div>
+                <div><h2>@ViewData["OrgName"]</h2></div>
                 <div><i icon-name="settings" class="stroke_width=1"></i></div>
             </div>
             <hr style="height:0.5px;width:75%;">
@@ -52,7 +52,7 @@
                     <div><h2>Audit Logs</h2></div>
                 </div>
                 <div class="flex card width-65vw space-between ">
-                    <code class="org-id"><%=orgId%></code>
+                    <code class="org-id">@ViewData["OrgId"]</code>
                     <div>
                         <a href="/logout"><button class="button">Change Org</button></a>
                     </div>
@@ -91,7 +91,7 @@
                                 <h3>Send Events</h3>
                             </div>
                             <hr style="height:0.5px;width:100%;margin-bottom:25px;">
-                            <form id="send-event-form" onsubmit="onSendEventSubmit()">
+                            <form id="send-event-form" method="post" action="/send_event">
                                 <div class="event-form-input-group flex-column flex-start">
                                     <div><label for="event-action">Event Action</label></div>
                                     <div><input required name="event-action" class="text-input" id="event-action" type="text" placeholder="Defined in your WorkOS Dashboard, e.g. user.organization_set"></div>
@@ -203,29 +203,6 @@
                     }
                 }
             })
-            function onSendEventSubmit () {
-                event.preventDefault()
-                const eventAction = document.getElementById("event-action").value
-                const eventVersion = document.getElementById("event-version").value
-                const actorName = document.getElementById("actor-name").value
-                const actorType = document.getElementById("actor-type").value
-                const targetName = document.getElementById("target-name").value
-                const targetType = document.getElementById("target-type").value
-                fetch('/send_event', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        eventAction,
-                        eventVersion,
-                        actorName,
-                        actorType,
-                        targetName,
-                        targetType
-                    })
-                })
-            }
             document.getElementById("generate_csv")
                 .addEventListener("click", (event) => {
                     const actions = document.getElementById("filter-actions").value

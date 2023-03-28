@@ -68,34 +68,61 @@ namespace WorkOS.AuditLogExampleApp.Controllers
         }
 
         [Route("/send_event")]
-        public IActionResult SendEvents()
+        public async Task<IActionResult> SendEvents()
         {
+            var eventAction = Request.Form["event-action"].ToString();
+            var eventVersion = Request.Form["event-version"].ToString();
+            var actorName = Request.Form["actor-name"].ToString();
+            var actorType = Request.Form["actor-type"].ToString();
+            var targetName = Request.Form["target-name"].ToString();
+            var targetType = Request.Form["target-type"].ToString();
+
             // Initialize WorkOS Audit Logs Service.
             var auditLogs = new AuditLogsService();
-            // Recieve event type.
-            var eventtype = Request.Form["event"].ToString();
-            AuditLogEvent eventPayload = null;
-            switch (eventtype)
-            {
-                case "user_signed_in":
-                    eventPayload = AuditLogMockEvents.UserSignedIn;
-                    break;
-                case "user_logged_out":
-                    eventPayload = AuditLogMockEvents.UserLoggedOut;
-                    break;
-                case "user_org_deleted":
-                    eventPayload = AuditLogMockEvents.UserOrganizationDeleted;
-                    break;
-                case "user_connection_deleted":
-                    eventPayload = AuditLogMockEvents.UserConnectionDeleted;
-                    break;
-            }
-            var options = new CreateAuditLogEventOptions()
-            {
-                OrganizationId = HttpContext.Session.GetString("organization_id"),
-                Event = eventPayload,
+            var orgId = HttpContext.Session.GetString("organization_id");
+            var idempotencyKey = "884793cd-bef4-46cf-8790-ed49257a09c6";
+
+            var auditLogEvent = new AuditLogEvent {
+                Action = eventAction,
+                OccurredAt = DateTime.Now,
+                Actor =
+                    new AuditLogEventActor {
+                        Id = "user_01GBNJC3MX9ZZJW1FSTF4C5938",
+                        Type = actorType,
+                        Name = actorName
+                    },
+                Targets =
+                    new List<AuditLogEventTarget>() {
+                        new AuditLogEventTarget {
+                            Id = "team_01GBNJD4MKHVKJGEWK42JNMBGS",
+                            Type = targetType,
+                            Name = targetName
+                        },
+                    },
+                Context =
+                    new AuditLogEventContext {
+                        Location = "123.123.123.123",
+                        UserAgent = "Chrome/104.0.0.0",
+                    },
             };
-            auditLogs.CreateEvent(options);
+
+            var options = new CreateAuditLogEventOptions() {
+                OrganizationId = orgId,
+                Event = auditLogEvent
+            };
+
+            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(options);
+            // Console.WriteLine(json);
+            try
+            {
+                await Task.Run(() => auditLogs.CreateEvent(options));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating audit log event");
+                return StatusCode(500);
+            }
+
             //Set ViewData for orgId and orgName.
             ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
             ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
