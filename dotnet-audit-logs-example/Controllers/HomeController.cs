@@ -68,10 +68,10 @@ namespace WorkOS.AuditLogExampleApp.Controllers
         }
 
         [Route("/send_event")]
-        public async Task<IActionResult> SendEvents()
+        public IActionResult SendEvents()
         {
             var eventAction = Request.Form["event-action"].ToString();
-            var eventVersion = Request.Form["event-version"].ToString();
+            var eventVersion = Int32.Parse(Request.Form["event-version"]);
             var actorName = Request.Form["actor-name"].ToString();
             var actorType = Request.Form["actor-type"].ToString();
             var targetName = Request.Form["target-name"].ToString();
@@ -85,6 +85,7 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             var auditLogEvent = new AuditLogEvent {
                 Action = eventAction,
                 OccurredAt = DateTime.Now,
+                Version = eventVersion,
                 Actor =
                     new AuditLogEventActor {
                         Id = "user_01GBNJC3MX9ZZJW1FSTF4C5938",
@@ -111,17 +112,7 @@ namespace WorkOS.AuditLogExampleApp.Controllers
                 Event = auditLogEvent
             };
 
-            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(options);
-            // Console.WriteLine(json);
-            try
-            {
-                await Task.Run(() => auditLogs.CreateEvent(options));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error creating audit log event");
-                return StatusCode(500);
-            }
+            auditLogs.CreateEvent(options);
 
             //Set ViewData for orgId and orgName.
             ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
