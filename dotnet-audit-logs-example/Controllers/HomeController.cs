@@ -214,20 +214,21 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             }
         }
 
-        [Route("/access_csv")]
-        public async Task<IActionResult> AccessCSV()
-        {
-            var auditLogs = new AuditLogsService();
-            var auditLogExport = await auditLogs.GetExport(HttpContext.Session.GetString("export_id"));
-            //Set ViewData for orgId and orgName.
-            ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
-            ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
-            return Redirect(auditLogExport.Url);
-        }
-
         [Route("/logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+            var organizationsService = new OrganizationsService();
+
+            var options = new ListOrganizationsOptions {
+                Limit = 5
+            };
+
+            var organizations = await organizationsService.ListOrganizations(options);
+            //Check if an organization is already established in session.
+
+            ViewData["organizationList"] = organizations.Data;
+            ViewData["before"] = organizations.ListMetadata.Before;
+            ViewData["after"] = organizations.ListMetadata.After;
             //Set ViewData for orgId and orgName.
             HttpContext.Session.SetString("organization_id", "");
             HttpContext.Session.SetString("organization_name", "");
