@@ -132,35 +132,37 @@
                                         <p>Audit Log events can be exported in a 2 step process. First, generate a CSV, and then Download it.</p>
                                     </div>
                                     <hr style="height:0.5px;width:100%;margin-bottom:25px;">
+                                    <form id="csv-form" method="post" action="/generate_csv">
                                     <div class="flex-column">
-                                        <div class="event-form-input-group flex-column flex-start">
-                                            <div><label for="range-start">Range Start</label></div>
-                                            <div><input required name="range-start" class="text-input" id="range-start" type="text" value=<%=rangeStart%> placeholder="ISO-8601 value for start of the export range"></div>
+                                            <div class="event-form-input-group flex-column flex-start">
+                                                <div><label for="range-start">Range Start</label></div>
+                                                <div><input required name="range-start" class="text-input" id="range-start" type="text" value="@ViewData["RangeStart"]" placeholder="ISO-8601 value for start of the export range"></div>
+                                            </div>
+                                            <div class="event-form-input-group flex-column flex-start">
+                                                <div><label for="range-end">Range End</label></div>
+                                                <div><input required name="range-end" class="text-input" id="range-end" type="text" value="@ViewData["RangeEnd"]" placeholder="ISO-8601 value for end of the export range"></div>
+                                            </div>
+                                            <div class="event-form-input-group flex-column flex-start">
+                                                <div><label for="filter-actions">Actions</label></div>
+                                                <div><input name="filter-actions" class="text-input" id="filter-actions" type="text" placeholder="Optional comma-separated list of actions to filter on"></div>
+                                            </div>
+                                            <div class="event-form-input-group flex-column flex-start">
+                                                <div><label for="filter-actors">Actors</label></div>
+                                                <div><input name="filter-actors" class="text-input" id="filter-actors" type="text" placeholder="Optional comma-separated list of actors to filter on"></div>
+                                            </div>
+                                            <div class="event-form-input-group flex-column flex-start">
+                                                <div><label for="filter-targets">Targets</label></div>
+                                                <div><input  name="filter-targets" class="text-input" id="filter-targets" type="text" placeholder="Optional comma-separated list of targets to filter on"></div>
+                                            </div>
                                         </div>
-                                        <div class="event-form-input-group flex-column flex-start">
-                                            <div><label for="range-end">Range End</label></div>
-                                            <div><input required name="range-end" class="text-input" id="range-end" type="text" value=<%=rangeEnd%> placeholder="ISO-8601 value for end of the export range"></div>
-                                        </div>
-                                        <div class="event-form-input-group flex-column flex-start">
-                                            <div><label for="filter-actions">Actions</label></div>
-                                            <div><input name="filter-actions" class="text-input" id="filter-actions" type="text" placeholder="Optional comma-separated list of actions to filter on"></div>
-                                        </div>
-                                        <div class="event-form-input-group flex-column flex-start">
-                                            <div><label for="filter-actors">Actors</label></div>
-                                            <div><input name="filter-actors" class="text-input" id="filter-actors" type="text" placeholder="Optional comma-separated list of actors to filter on"></div>
-                                        </div>
-                                        <div class="event-form-input-group flex-column flex-start">
-                                            <div><label for="filter-targets">Targets</label></div>
-                                            <div><input  name="filter-targets" class="text-input" id="filter-targets" type="text" placeholder="Optional comma-separated list of targets to filter on"></div>
-                                        </div>
+                                        <div class="flex flex-start">
+                                            <div class="flex width-150px">
+                                                <button class="button button-outline" name="event" id="generate_csv" value="generate_csv" >Generate CSV</button>
+                                            <div>                                                             <div class="flex width-150px">
+                                                <button class="button button-outline" name="event" id="access_csv" value="access_csv" >Download CSV</button>
+                                            <div>
                                     </div>
-                                    <div class="flex flex-start">
-                                        <div class="flex width-150px">
-                                            <button class="button button-outline" name="event" id="generate_csv" value="generate_csv" >Generate CSV</button>
-                                        <div>                                                             <div class="flex width-150px">
-                                            <button class="button button-outline" name="event" id="access_csv" value="access_csv" >Download CSV</button>
-                                        <div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -203,7 +205,7 @@
                     }
                 }
             })
-            document.getElementById("generate_csv")
+            @* document.getElementById("generate_csv")
                 .addEventListener("click", (event) => {
                     const actions = document.getElementById("filter-actions").value
                     const actors = document.getElementById("filter-actors").value
@@ -231,7 +233,7 @@
                             'Content-Type': 'application/json'
                         }
                     })
-                })
+                }) *@
         </script>
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>lucide.createIcons()</script>
