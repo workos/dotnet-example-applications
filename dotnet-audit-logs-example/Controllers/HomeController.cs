@@ -150,57 +150,68 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             return View();
         }
 
-        [Route("/generate_csv")]
-        public async Task<IActionResult> GenerateCSV()
+        [Route("/csv")]
+        public async Task<IActionResult> CSV()
         {
             var buttonClicked = Request.Form["event"].ToString();
-            var rangeStart = Request.Form["range-start"].ToString();
-            var rangeEnd = Request.Form["range-end"].ToString();
-            var filterActions = Request.Form["filter-actions"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
-            var filterActors = Request.Form["filter-actors"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
-            var filterTargets = Request.Form["filter-targets"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
-
-            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(filterActions);
-            // Console.WriteLine(json);
 
             //Initialize WorkOS Audit Logs Service.
             var auditLogs = new AuditLogsService();
 
-            var options = new CreateAuditLogExportOptions()
+            if (buttonClicked == "generate_csv")
             {
-                OrganizationId = HttpContext.Session.GetString("organization_id"),
-                RangeStart = DateTime.Now.AddMonths(-1),
-                RangeEnd = DateTime.Now,
-            };
+                var rangeStart = Request.Form["range-start"].ToString();
+                var rangeEnd = Request.Form["range-end"].ToString();
+                var filterActions = Request.Form["filter-actions"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
+                var filterActors = Request.Form["filter-actors"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
+                var filterTargets = Request.Form["filter-targets"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
 
-            if (filterActions?.Count > 0)
-            {
-                options.Actions = filterActions;
+                // string json = Newtonsoft.Json.JsonConvert.SerializeObject(filterActions);
+                // Console.WriteLine(json);
+
+                var options = new CreateAuditLogExportOptions()
+                {
+                    OrganizationId = HttpContext.Session.GetString("organization_id"),
+                    RangeStart = DateTime.Now.AddMonths(-1),
+                    RangeEnd = DateTime.Now,
+                };
+
+                if (filterActions?.Count > 0)
+                {
+                    options.Actions = filterActions;
+                }
+
+                if (filterActors?.Count > 0)
+                {
+                    options.Actors = filterActors;
+                }
+
+                if (filterTargets?.Count > 0)
+                {
+                    options.Targets = filterTargets;
+                }
+
+                var auditLogExport = await auditLogs.CreateExport(options);
+
+
+                HttpContext.Session.SetString("export_id", auditLogExport.Id);
+
+                ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
+                ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
+                return View("SendEvents");
             }
-
-            if (filterActors?.Count > 0)
+            else if (buttonClicked == "access_csv")
             {
-                options.Actors = filterActors;
+                var auditLogExport = await auditLogs.GetExport(HttpContext.Session.GetString("export_id"));
+                //Set ViewData for orgId and orgName.
+                ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
+                ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
+                return Redirect(auditLogExport.Url);
             }
-
-            if (filterTargets?.Count > 0)
+            else
             {
-                options.Targets = filterTargets;
+                return BadRequest();
             }
-
-            var auditLogExport = await auditLogs.CreateExport(options);
-
-
-            // HttpContext.Session.SetString("export_id", auditLogExport.Id);
-
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(auditLogExport);
-            Console.WriteLine(json);
-
-
-            // Set ViewData for orgId and orgName.
-            ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
-            ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
-            return View("SendEvents");
         }
 
         [Route("/access_csv")]

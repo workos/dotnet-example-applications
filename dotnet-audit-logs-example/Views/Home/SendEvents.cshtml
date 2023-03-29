@@ -132,15 +132,15 @@
                                         <p>Audit Log events can be exported in a 2 step process. First, generate a CSV, and then Download it.</p>
                                     </div>
                                     <hr style="height:0.5px;width:100%;margin-bottom:25px;">
-                                    <form id="csv-form" method="post" action="/generate_csv">
+                                    <form id="csv-form" method="post" action="/csv">
                                     <div class="flex-column">
                                             <div class="event-form-input-group flex-column flex-start">
                                                 <div><label for="range-start">Range Start</label></div>
-                                                <div><input required name="range-start" class="text-input" id="range-start" type="text" value="@ViewData["RangeStart"]" placeholder="ISO-8601 value for start of the export range"></div>
+                                                <div><input name="range-start" class="text-input" id="range-start" type="text" value="@ViewData["RangeStart"]" placeholder="ISO-8601 value for start of the export range"></div>
                                             </div>
                                             <div class="event-form-input-group flex-column flex-start">
                                                 <div><label for="range-end">Range End</label></div>
-                                                <div><input required name="range-end" class="text-input" id="range-end" type="text" value="@ViewData["RangeEnd"]" placeholder="ISO-8601 value for end of the export range"></div>
+                                                <div><input name="range-end" class="text-input" id="range-end" type="text" value="@ViewData["RangeEnd"]" placeholder="ISO-8601 value for end of the export range"></div>
                                             </div>
                                             <div class="event-form-input-group flex-column flex-start">
                                                 <div><label for="filter-actions">Actions</label></div>
