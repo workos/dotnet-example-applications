@@ -27,11 +27,10 @@ namespace WorkOS.DSyncExampleApp.Controllers
         [Route("/{cursor?}/{type?}")]
         public async Task<IActionResult> Index(string cursor, string type)
         {
-            // Initialize the WorkOS client with your WorkOS API Key.
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
-            // Initialize WorkOS Directory Service.
+
             var directorySync = new DirectorySyncService();
-            //Pull and store Directory ID from environment variables.
+
             var cursorId = cursor;
             var cursorType = type;
             var options = new ListDirectoriesOptions {
@@ -65,9 +64,8 @@ namespace WorkOS.DSyncExampleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Directory(string id)
         {
-            // Initialize WorkOS Directory Service.
             var directorySync = new DirectorySyncService();
-            // Get Directory
+
             var directory = await directorySync.GetDirectory(id);
             var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
             ViewBag.CurrentDirectory = JsonSerializer.Serialize(directory, serializeOptions);
@@ -83,23 +81,19 @@ namespace WorkOS.DSyncExampleApp.Controllers
         [Route("user/{id?}/{directoryId}")]
         public async Task<IActionResult> User(string id, string directoryId)
         {
-            // Initialize WorkOS Directory Service.
             var directorySync = new DirectorySyncService();
-            // Set Directory ID as option for our API call
+
             var directId = directoryId;
             var directory = await directorySync.GetDirectory(directId);
             var userId = id;
             var user = await directorySync.GetUser(userId);
+
             var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
-            ViewData["directory"] = directory;
             ViewBag.Directory = directory;
             ViewBag.DirectoryName = directory.Name;
-            ViewData["user"] = user;
             ViewBag.FirstName = user.FirstName;
             ViewBag.LastName = user.LastName;
             ViewBag.User = JsonSerializer.Serialize(user, serializeOptions);
-
-
 
             return View();
         }
@@ -107,54 +101,45 @@ namespace WorkOS.DSyncExampleApp.Controllers
         [Route("group/{id?}/{directoryId?}")]
         public async Task<IActionResult> Group(string id, string directoryId)
         {
-            // Initialize WorkOS Directory Service.
             var directorySync = new DirectorySyncService();
-            // Set Directory ID as option for our API call
+
             var directId = directoryId;
             var directory = await directorySync.GetDirectory(directId);
+
             var directoryGroupId = id;
-            // API Call to list all users within our specified directory.
             var directoryGroup = await directorySync.GetGroup(directoryGroupId);
-            // Parse response and send to view.
-            // List<Group> groupList = new List<Group>();
-            // groupList = directoryGroup;
+
             var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
-            ViewData["directory"] = directory;
             ViewBag.Directory = directory;
             ViewBag.DirectoryName = directory.Name;
-            ViewData["group"] = directoryGroup;
             ViewBag.GroupName = directoryGroup.Name;
             ViewBag.Group = JsonSerializer.Serialize(directoryGroup, serializeOptions);
-
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Directory);
-            Console.WriteLine(json);
 
             return View();
         }
 
         [Route("groupsandusers/{id?}")]
-        public async Task<IActionResult> Groups(string id)
+        public async Task<IActionResult> UsersGroups(string id)
         {
             var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
-            // Initialize WorkOS Directory Service.
+
             var directorySync = new DirectorySyncService();
-            // Grab directory to populate view details
+
             var directory = await directorySync.GetDirectory(id);
-            // Set Directory ID as option for our API call.
+
+            // Group Logic
             var groupOptions = new ListGroupsOptions
             {
                 Directory = id,
             };
-            // API Call to list all groups within our specified directory.
+
             var groups = await directorySync.ListGroups(groupOptions);
-            // Parse response and send to view.
+
             List<Group> groupList = new List<Group>();
             groupList = groups.Data;
             ViewData["groupList"] = groupList;
             ViewBag.Groups = groups;
             ViewBag.CurrentDirectoryName = JsonSerializer.Serialize(directory.Name, serializeOptions);
-            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["groupList"]);
-            // Console.WriteLine(json);
 
             // User logic
             var userOptions = new ListUsersOptions
@@ -162,13 +147,12 @@ namespace WorkOS.DSyncExampleApp.Controllers
                 Directory = id,
             };
             var users = await directorySync.ListUsers(userOptions);
-            // Parse response and send to view.
+
             List<User> userList = new List<User>();
             userList = users.Data;
             ViewData["userList"] = userList;
             ViewBag.Users = users;
-            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["userList"]);
-            // Console.WriteLine(json);
+
             return View();
         }
 
