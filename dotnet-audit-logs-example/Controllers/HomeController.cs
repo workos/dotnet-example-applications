@@ -30,9 +30,8 @@ namespace WorkOS.AuditLogExampleApp.Controllers
         [Route("/{cursor?}/{type?}")]
         public async Task<IActionResult> Index(string cursor, string type)
         {
-            // Initialize the WorkOS client with your WorkOS API Key.
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
-            // Initialize WorkOS Audit Logs and Organization Service.
+
             var auditLogs = new AuditLogsService();
             var organizationsService = new OrganizationsService();
             var cursorId = cursor;
@@ -55,14 +54,10 @@ namespace WorkOS.AuditLogExampleApp.Controllers
                 };
             }
             var organizations = await organizationsService.ListOrganizations(options);
-            //Check if an organization is already established in session.
 
             ViewData["organizationList"] = organizations.Data;
             ViewData["before"] = organizations.ListMetadata.Before;
             ViewData["after"] = organizations.ListMetadata.After;
-
-            // string json = Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["before"]);
-            // Console.WriteLine(json);
 
             return View();
         }
@@ -77,7 +72,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             var targetName = Request.Form["target-name"].ToString();
             var targetType = Request.Form["target-type"].ToString();
 
-            // Initialize WorkOS Audit Logs Service.
             var auditLogs = new AuditLogsService();
             var orgId = HttpContext.Session.GetString("organization_id");
             var idempotencyKey = "884793cd-bef4-46cf-8790-ed49257a09c6";
@@ -114,7 +108,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
 
             auditLogs.CreateEvent(options);
 
-            //Set ViewData for orgId and orgName.
             ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
             ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
             return View();
@@ -123,9 +116,8 @@ namespace WorkOS.AuditLogExampleApp.Controllers
         [Route("/set_org/{orgId?}")]
         public async Task<IActionResult> SendEvents(string orgId)
         {
-            // Initialize WorkOS Organization Service.
             var organizationsService = new OrganizationsService();
-            // Get the organization.
+
             var organizationId = orgId;
             var org = await organizationsService.GetOrganization(organizationId);
             var now = DateTime.Now.ToUniversalTime();
@@ -135,7 +127,7 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             ViewData["OrgName"] = org.Name;
             ViewData["RangeStart"] = monthAgo.ToString("o");
             ViewData["RangeEnd"] = now.ToString("o");
-            // Set the org name and id in the session.
+
             HttpContext.Session.SetString("organization_id", org.Id);
             HttpContext.Session.SetString("organization_name", org.Name);
             return View();
@@ -146,7 +138,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
         {
             var buttonClicked = Request.Form["event"].ToString();
 
-            //Initialize WorkOS Audit Logs Service.
             var auditLogs = new AuditLogsService();
 
             if (buttonClicked == "generate_csv")
@@ -156,9 +147,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
                 var filterActions = Request.Form["filter-actions"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
                 var filterActors = Request.Form["filter-actors"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
                 var filterTargets = Request.Form["filter-targets"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
-
-                // string json = Newtonsoft.Json.JsonConvert.SerializeObject(filterActions);
-                // Console.WriteLine(json);
 
                 var options = new CreateAuditLogExportOptions()
                 {
@@ -184,7 +172,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
 
                 var auditLogExport = await auditLogs.CreateExport(options);
 
-
                 HttpContext.Session.SetString("export_id", auditLogExport.Id);
 
                 ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
@@ -194,7 +181,7 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             else if (buttonClicked == "access_csv")
             {
                 var auditLogExport = await auditLogs.GetExport(HttpContext.Session.GetString("export_id"));
-                //Set ViewData for orgId and orgName.
+
                 ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
                 ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
                 return Redirect(auditLogExport.Url);
@@ -218,9 +205,9 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             };
 
             if (intentType == "AuditLogs")
-                {
-                    options.Intent = Intent.AuditLogs;
-                }
+            {
+                options.Intent = Intent.AuditLogs;
+            }
             if (intentType == "LogStreams")
             {
                 options.Intent = Intent.LogStreams;
@@ -241,12 +228,11 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             };
 
             var organizations = await organizationsService.ListOrganizations(options);
-            //Check if an organization is already established in session.
 
             ViewData["organizationList"] = organizations.Data;
             ViewData["before"] = organizations.ListMetadata.Before;
             ViewData["after"] = organizations.ListMetadata.After;
-            //Set ViewData for orgId and orgName.
+
             HttpContext.Session.SetString("organization_id", "");
             HttpContext.Session.SetString("organization_name", "");
             return View("Index");
