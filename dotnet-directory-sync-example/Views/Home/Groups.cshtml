@@ -41,7 +41,7 @@
                     </p>
                     </h2>
                     <div class="text_box">
-                        @if (ViewData["groupList"] != null)
+                        @if (ViewData["groupList"] != null && ViewData["groupList"] is IEnumerable<object> groupList && groupList.Count() > 0)
                             {
                                 <div class="text-box">
                                     <ul>
@@ -59,13 +59,13 @@
                             }
                             else
                             {
-                                <div class="card width-40vw"><code>No Groups Found</code></div>
+                                <code>No Groups Found</code>
                             }
                     </div>
                     <p>⚡️ Users for @ViewBag.CurrentDirectoryName ⚡️
                     </p>
                     <div class="text_box">
-                        @if (ViewData["userList"] != null)
+                        @if (ViewData["userList"] != null && ViewData["userList"] is IEnumerable<object> groupList && groupList.Count() > 0)
                             {
                                 <div class="text-box">
                                     <ul>
@@ -82,7 +82,7 @@
                             }
                             else
                             {
-                                <div class="card width-40vw"><code>No Groups Found</code></div>
+                                <code>No Groups Found</code>
                             }
                     </div>
                     <a href="javascript:history.back()"><button class='groups_button button button-sm'>Back</button></a>
