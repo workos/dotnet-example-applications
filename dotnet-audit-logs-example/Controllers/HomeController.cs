@@ -141,15 +141,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             return View();
         }
 
-        [Route("/export_events")]
-        public IActionResult ExportEvents()
-        {
-            //Set ViewData for orgId and orgName.
-            ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
-            ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
-            return View();
-        }
-
         [Route("/csv")]
         public async Task<IActionResult> CSV()
         {
@@ -212,6 +203,32 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [Route("/events/{intent?}")]
+        public async Task<IActionResult> Events(string intent)
+        {
+            var intentType = intent;
+            var orgId = HttpContext.Session.GetString("organization_id");
+
+            var portalService = new PortalService();
+
+            var options = new GenerateLinkOptions {
+                Organization = orgId
+            };
+
+            if (intentType == "AuditLogs")
+                {
+                    options.Intent = Intent.AuditLogs;
+                }
+            if (intentType == "LogStreams")
+            {
+                options.Intent = Intent.LogStreams;
+            }
+
+            var link = await portalService.GenerateLink(options);
+
+            return Redirect(link);
         }
 
         [Route("/logout")]
