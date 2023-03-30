@@ -205,35 +205,6 @@
                     }
                 }
             })
-            @* document.getElementById("generate_csv")
-                .addEventListener("click", (event) => {
-                    const actions = document.getElementById("filter-actions").value
-                    const actors = document.getElementById("filter-actors").value
-                    const targets = document.getElementById("filter-targets").value
-                    fetch('/generate_csv', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            rangeStart: document.getElementById("range-start").value,
-                            rangeEnd: document.getElementById("range-end").value,
-                            actions: actions ? actions.split(",") : null,
-                            actors: actors ? actors.split(",") : null,
-                            targets: targets ? targets.split(",") : null
-                        })
-                    })
-                })
-
-            document.getElementById("access_csv")
-                .addEventListener("click", (event) => {
-                    fetch('/access_csv',{
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                }) *@
         </script>
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>lucide.createIcons()</script>
