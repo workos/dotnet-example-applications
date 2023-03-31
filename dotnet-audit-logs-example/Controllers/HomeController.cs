@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Globalization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -143,16 +144,21 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             if (buttonClicked == "generate_csv")
             {
                 var rangeStart = Request.Form["range-start"].ToString();
+                var rangeStartParsed = DateTime.ParseExact(rangeStart, "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+    CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
                 var rangeEnd = Request.Form["range-end"].ToString();
+                var rangeEndParsed = DateTime.ParseExact(rangeEnd, "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+    CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
                 var filterActions = Request.Form["filter-actions"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
                 var filterActors = Request.Form["filter-actors"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
                 var filterTargets = Request.Form["filter-targets"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
+                var dateTimeTest = DateTime.Now;
 
                 var options = new CreateAuditLogExportOptions()
                 {
-                    OrganizationId = HttpContext.Session.GetString("organization_id"),
-                    RangeStart = DateTime.Now.AddMonths(-1),
-                    RangeEnd = DateTime.Now,
+                    OrganizationId = "org_01GB5X5TNYM2961QJQ23WPEGE0",
+                    RangeStart = rangeStartParsed,
+                    RangeEnd = rangeEndParsed,
                 };
 
                 if (filterActions?.Count > 0)
@@ -173,8 +179,8 @@ namespace WorkOS.AuditLogExampleApp.Controllers
                 var auditLogExport = await auditLogs.CreateExport(options);
 
                 var auditLogExportJson = JsonConvert.SerializeObject(auditLogExport);
-                Console.WriteLine(auditLogExportJson);
-                // HttpContext.Session.SetString("export_id", auditLogExport.Id);
+
+                HttpContext.Session.SetString("export_id", auditLogExport.Id);
 
                 ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
                 ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
