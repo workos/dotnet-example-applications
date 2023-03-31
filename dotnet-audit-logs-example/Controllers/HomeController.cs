@@ -172,7 +172,9 @@ namespace WorkOS.AuditLogExampleApp.Controllers
 
                 var auditLogExport = await auditLogs.CreateExport(options);
 
-                HttpContext.Session.SetString("export_id", auditLogExport.Id);
+                var auditLogExportJson = JsonConvert.SerializeObject(auditLogExport);
+                Console.WriteLine(auditLogExportJson);
+                // HttpContext.Session.SetString("export_id", auditLogExport.Id);
 
                 ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
                 ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
