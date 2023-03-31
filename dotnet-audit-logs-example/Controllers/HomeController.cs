@@ -66,7 +66,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
         [Route("/send_event")]
         public IActionResult SendEvents()
         {
-            var eventAction = Request.Form["event-action"].ToString();
             var eventVersion = Int32.Parse(Request.Form["event-version"]);
             var actorName = Request.Form["actor-name"].ToString();
             var actorType = Request.Form["actor-type"].ToString();
@@ -78,7 +77,7 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             var idempotencyKey = "884793cd-bef4-46cf-8790-ed49257a09c6";
 
             var auditLogEvent = new AuditLogEvent {
-                Action = eventAction,
+                Action = "user.organization_deleted",
                 OccurredAt = DateTime.Now,
                 Version = eventVersion,
                 Actor =

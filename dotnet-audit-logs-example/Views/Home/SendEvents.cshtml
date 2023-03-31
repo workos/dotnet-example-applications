@@ -88,14 +88,10 @@
                         <div class="tab-content">
                             <div id="send-events" name='#send-events' data-tab-content class="flex_column">
                             <div>
-                                <h3>Send Events</h3>
+                                <h3>Configure and send a "User Organization Deleted" Event</h3>
                             </div>
                             <hr style="height:0.5px;width:100%;margin-bottom:25px;">
                             <form id="send-event-form" method="post" action="/send_event">
-                                <div class="event-form-input-group flex-column flex-start">
-                                    <div><label for="event-action">Event Action</label></div>
-                                    <div><input required name="event-action" class="text-input" id="event-action" type="text" placeholder="Defined in your WorkOS Dashboard, e.g. user.organization_set"></div>
-                                </div>
                                 <div class="event-form-input-group flex-column flex-start">
                                     <div><label for="event-version">Event Version</label></div>
                                     <div><input required name="event-version" class="text-input" id="event-version" type="text" placeholder="Defined in your WorkOS Dashboard, e.g. 1"></div>
