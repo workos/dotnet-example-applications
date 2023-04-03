@@ -155,7 +155,7 @@ namespace WorkOS.AuditLogExampleApp.Controllers
 
                 var options = new CreateAuditLogExportOptions()
                 {
-                    OrganizationId = "org_01GB5X5TNYM2961QJQ23WPEGE0",
+                    OrganizationId = HttpContext.Session.GetString("organization_id"),
                     RangeStart = rangeStartParsed,
                     RangeEnd = rangeEndParsed,
                 };
@@ -177,9 +177,13 @@ namespace WorkOS.AuditLogExampleApp.Controllers
 
                 var auditLogExport = await auditLogs.CreateExport(options);
 
-                var auditLogExportJson = JsonConvert.SerializeObject(auditLogExport);
+                // var optionsExport = JsonConvert.SerializeObject(auditLogExport);
+                // Console.WriteLine(optionsExport);
 
-                HttpContext.Session.SetString("export_id", auditLogExport.Id);
+                if (auditLogExport.Id != null)
+                {
+                    HttpContext.Session.SetString("export_id", auditLogExport.Id);
+                }
 
                 ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
                 ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
@@ -187,11 +191,21 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             }
             else if (buttonClicked == "access_csv")
             {
-                var auditLogExport = await auditLogs.GetExport(HttpContext.Session.GetString("export_id"));
+                if (HttpContext.Session.GetString("export_id") != null)
+                {
+                    var auditLogExport = await auditLogs.GetExport(HttpContext.Session.GetString("export_id"));
 
-                ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
-                ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
-                return Redirect(auditLogExport.Url);
+                    // var auditLogExportConsoleLog = JsonConvert.SerializeObject(auditLogExport);
+                    // Console.WriteLine(auditLogExportConsoleLog);
+
+                    ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
+                    ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
+                    return Redirect(auditLogExport.Url);
+                }
+                else
+                {
+                    return View("SendEvents");
+                }
             }
             else
             {
