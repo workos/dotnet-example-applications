@@ -59,7 +59,7 @@ namespace WorkOS.SSOExampleApp.Controllers
             var options = new GetAuthorizationURLOptions
             {
                 ClientId = Environment.GetEnvironmentVariable("WORKOS_CLIENT_ID"),
-                Connection = "conn_01GA1FK0BNF6EADZKYFQMGZSNN",
+                Connection = "",
                 RedirectURI = "https://localhost:5001/Home/Callback/",
             };
 

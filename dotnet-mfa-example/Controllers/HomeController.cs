@@ -115,6 +115,7 @@ namespace WorkOS.MFAExampleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> FactorDetail(string id)
         {
+            Console.WriteLine("factor_detail route hit");
             var service = new MfaService();
             List<Factor> factors = new List<Factor>();
             string sessionFactors = HttpContext.Session.GetString("factors");
