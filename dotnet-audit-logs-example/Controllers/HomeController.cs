@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using WorkOS.AuditLogExampleApp.Constants;
 using WorkOS.AuditLogExampleApp.Models;
-using WorkOS; // Import WorkOS Package
+using WorkOS;
 
 namespace WorkOS.AuditLogExampleApp.Controllers
 {
@@ -194,9 +194,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
                 if (HttpContext.Session.GetString("export_id") != null)
                 {
                     var auditLogExport = await auditLogs.GetExport(HttpContext.Session.GetString("export_id"));
-
-                    // var auditLogExportConsoleLog = JsonConvert.SerializeObject(auditLogExport);
-                    // Console.WriteLine(auditLogExportConsoleLog);
 
                     ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
                     ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
