@@ -184,9 +184,6 @@ namespace WorkOS.AuditLogExampleApp.Controllers
 
                 var auditLogExport = await auditLogs.CreateExport(options);
 
-                // var optionsExport = JsonConvert.SerializeObject(auditLogExport);
-                // Console.WriteLine(optionsExport);
-
                 if (auditLogExport.Id != null)
                 {
                     HttpContext.Session.SetString("export_id", auditLogExport.Id);
