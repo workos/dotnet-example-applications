@@ -24,17 +24,42 @@ namespace WorkOS.DSyncExampleApp.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        [Route("/{cursor?}/{type?}")]
+        public async Task<IActionResult> Index(string cursor, string type)
         {
-            // Initialize the WorkOS client with your WorkOS API Key.
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
-            // Initialize WorkOS Directory Service.
+
             var directorySync = new DirectorySyncService();
-            //Pull and store Directory ID from environment variables.
+
+            var cursorId = cursor;
+            var cursorType = type;
+            var options = new ListDirectoriesOptions
+            {
+                Limit = 5
+            };
+            if (cursorType == "before")
+            {
+                options = new ListDirectoriesOptions
+                {
+                    Limit = 5,
+                    Before = cursorId,
+                };
+            }
+            else if (cursorType == "after")
+            {
+                options = new ListDirectoriesOptions
+                {
+                    Limit = 5,
+                    After = cursorId,
+                };
+            }
             List<Directory> directoryList = new List<Directory>();
-            var directories = await directorySync.ListDirectories();
-            directoryList = directories.Data;
-            ViewData["directoryList"] = directoryList;
+            var directories = await directorySync.ListDirectories(options);
+
+            ViewData["directoryList"] = directories.Data;
+            ViewData["before"] = directories.ListMetadata.Before;
+            ViewData["after"] = directories.ListMetadata.After;
+
             return View();
         }
 
@@ -42,58 +67,96 @@ namespace WorkOS.DSyncExampleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Directory(string id)
         {
-            // Initialize WorkOS Directory Service.
             var directorySync = new DirectorySyncService();
-            // Get Directory
+
             var directory = await directorySync.GetDirectory(id);
             var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
             ViewBag.CurrentDirectory = JsonSerializer.Serialize(directory, serializeOptions);
             ViewBag.CurrentDirectoryId = id;
-
+            ViewBag.CurrentDirectoryName = JsonSerializer.Serialize(directory.Name, serializeOptions);
+            ViewBag.CurrentDirectoryType = JsonSerializer.Serialize(directory.Type, serializeOptions);
+            ViewBag.CurrentDirectoryDomain = JsonSerializer.Serialize(directory.Domain, serializeOptions);
+            ViewBag.CurrentDirectoryCreatedAt = JsonSerializer.Serialize(directory.CreatedAt, serializeOptions);
             return View();
 
         }
 
-        [Route("user/{id?}")]
-        public async Task<IActionResult> Users(string id)
+        [Route("user/{id?}/{directoryId}")]
+        public async Task<IActionResult> User(string id, string directoryId)
         {
-            // Initialize WorkOS Directory Service.
             var directorySync = new DirectorySyncService();
-            // Set Directory ID as option for our API call
-            var options = new ListUsersOptions
+
+            var directId = directoryId;
+            var directory = await directorySync.GetDirectory(directId);
+            var userId = id;
+            var user = await directorySync.GetUser(userId);
+
+            var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
+            ViewBag.Directory = directory;
+            ViewBag.DirectoryName = directory.Name;
+            ViewBag.FirstName = user.FirstName;
+            ViewBag.LastName = user.LastName;
+            ViewBag.User = JsonSerializer.Serialize(user, serializeOptions);
+
+            return View();
+        }
+
+        [Route("group/{id?}/{directoryId?}")]
+        public async Task<IActionResult> Group(string id, string directoryId)
+        {
+            var directorySync = new DirectorySyncService();
+
+            var directId = directoryId;
+            var directory = await directorySync.GetDirectory(directId);
+
+            var directoryGroupId = id;
+            var directoryGroup = await directorySync.GetGroup(directoryGroupId);
+
+            var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
+            ViewBag.Directory = directory;
+            ViewBag.DirectoryName = directory.Name;
+            ViewBag.GroupName = directoryGroup.Name;
+            ViewBag.Group = JsonSerializer.Serialize(directoryGroup, serializeOptions);
+
+            return View();
+        }
+
+        [Route("groupsandusers/{id?}")]
+        public async Task<IActionResult> UsersGroups(string id)
+        {
+            var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
+
+            var directorySync = new DirectorySyncService();
+
+            var directory = await directorySync.GetDirectory(id);
+
+            // Group Logic
+            var groupOptions = new ListGroupsOptions
             {
                 Directory = id,
             };
-            // API Call to list all users within our specified directory.
-            var users = await directorySync.ListUsers(options);
-            // Parse response and send to view.
+
+            var groups = await directorySync.ListGroups(groupOptions);
+
+            List<Group> groupList = new List<Group>();
+            groupList = groups.Data;
+            ViewData["groupList"] = groupList;
+            ViewBag.Groups = groups;
+            ViewBag.CurrentDirectoryName = JsonSerializer.Serialize(directory.Name, serializeOptions);
+
+            // User logic
+            var userOptions = new ListUsersOptions
+            {
+                Directory = id,
+            };
+            var users = await directorySync.ListUsers(userOptions);
+
             List<User> userList = new List<User>();
             userList = users.Data;
             ViewData["userList"] = userList;
             ViewBag.Users = users;
 
             return View();
-        }
-
-        [Route("group/{id?}")]
-        public async Task<IActionResult> Groups(string id)
-        {
-            // Initialize WorkOS Directory Service.
-            var directorySync = new DirectorySyncService();
-            // Set Directory ID as option for our API call.
-            var groupsOptions = new ListGroupsOptions
-            {
-                Directory = id,
-            };
-            // API Call to list all groups within our specified directory.
-            var groups = await directorySync.ListGroups(groupsOptions);
-            // Parse response and send to view.
-            List<Group> groupList = new List<Group>();
-            groupList = groups.Data;
-            ViewData["groupList"] = groupList;
-            ViewBag.Groups = groups;
-            return View();
-
         }
 
 
