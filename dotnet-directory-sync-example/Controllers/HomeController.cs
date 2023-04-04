@@ -33,19 +33,22 @@ namespace WorkOS.DSyncExampleApp.Controllers
 
             var cursorId = cursor;
             var cursorType = type;
-            var options = new ListDirectoriesOptions {
+            var options = new ListDirectoriesOptions
+            {
                 Limit = 5
             };
             if (cursorType == "before")
             {
-                options = new ListDirectoriesOptions {
+                options = new ListDirectoriesOptions
+                {
                     Limit = 5,
                     Before = cursorId,
                 };
             }
             else if (cursorType == "after")
             {
-                options = new ListDirectoriesOptions {
+                options = new ListDirectoriesOptions
+                {
                     Limit = 5,
                     After = cursorId,
                 };
