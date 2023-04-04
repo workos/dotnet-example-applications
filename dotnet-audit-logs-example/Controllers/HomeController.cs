@@ -37,19 +37,22 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             var organizationsService = new OrganizationsService();
             var cursorId = cursor;
             var cursorType = type;
-            var options = new ListOrganizationsOptions {
+            var options = new ListOrganizationsOptions
+            {
                 Limit = 5
             };
             if (cursorType == "before")
             {
-                options = new ListOrganizationsOptions {
+                options = new ListOrganizationsOptions
+                {
                     Limit = 5,
                     Before = cursorId,
                 };
             }
             else if (cursorType == "after")
             {
-                options = new ListOrganizationsOptions {
+                options = new ListOrganizationsOptions
+                {
                     Limit = 5,
                     After = cursorId,
                 };
@@ -76,12 +79,14 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             var orgId = HttpContext.Session.GetString("organization_id");
             var idempotencyKey = "884793cd-bef4-46cf-8790-ed49257a09c6";
 
-            var auditLogEvent = new AuditLogEvent {
+            var auditLogEvent = new AuditLogEvent
+            {
                 Action = "user.organization_deleted",
                 OccurredAt = DateTime.Now,
                 Version = eventVersion,
                 Actor =
-                    new AuditLogEventActor {
+                    new AuditLogEventActor
+                    {
                         Id = "user_01GBNJC3MX9ZZJW1FSTF4C5938",
                         Type = actorType,
                         Name = actorName
@@ -95,13 +100,15 @@ namespace WorkOS.AuditLogExampleApp.Controllers
                         },
                     },
                 Context =
-                    new AuditLogEventContext {
+                    new AuditLogEventContext
+                    {
                         Location = "123.123.123.123",
                         UserAgent = "Chrome/104.0.0.0",
                     },
             };
 
-            var options = new CreateAuditLogEventOptions() {
+            var options = new CreateAuditLogEventOptions()
+            {
                 OrganizationId = orgId,
                 Event = auditLogEvent
             };
@@ -218,7 +225,8 @@ namespace WorkOS.AuditLogExampleApp.Controllers
 
             var portalService = new PortalService();
 
-            var options = new GenerateLinkOptions {
+            var options = new GenerateLinkOptions
+            {
                 Organization = orgId
             };
 
@@ -241,7 +249,8 @@ namespace WorkOS.AuditLogExampleApp.Controllers
         {
             var organizationsService = new OrganizationsService();
 
-            var options = new ListOrganizationsOptions {
+            var options = new ListOrganizationsOptions
+            {
                 Limit = 5
             };
 
