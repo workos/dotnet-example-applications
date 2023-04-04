@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.13"/>
-    <PackageReference Include="WorkOS.net" Version="1.16.0"/>
+    <PackageReference Include="WorkOS.net" Version="1.17.3"/>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.13"/>
   </ItemGroup>
 
