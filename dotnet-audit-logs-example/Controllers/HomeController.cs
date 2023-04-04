@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Globalization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using WorkOS.AuditLogExampleApp.Constants;
 using WorkOS.AuditLogExampleApp.Models;
-using WorkOS; // Import WorkOS Package
+using WorkOS;
 
 namespace WorkOS.AuditLogExampleApp.Controllers
 {
@@ -27,123 +28,235 @@ namespace WorkOS.AuditLogExampleApp.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        [Route("/{cursor?}/{type?}")]
+        public async Task<IActionResult> Index(string cursor, string type)
         {
-            // Initialize the WorkOS client with your WorkOS API Key.
             WorkOS.SetApiKey(Environment.GetEnvironmentVariable("WORKOS_API_KEY"));
-            // Initialize WorkOS Audit Logs Service.
+
             var auditLogs = new AuditLogsService();
-            //Check if an organization is already established in session.
-            ViewBag.OrganizationId = "";
-            var organizationId = HttpContext.Session.GetString("organization_id");
-            var organizationName = HttpContext.Session.GetString("organization_name");
-            if (organizationId != null & organizationName != null)
+            var organizationsService = new OrganizationsService();
+            var cursorId = cursor;
+            var cursorType = type;
+            var options = new ListOrganizationsOptions
             {
-                ViewData["OrgId"] = organizationId;
-                ViewData["OrgName"] = organizationName;
-                return View("SendEvents");
+                Limit = 5
+            };
+            if (cursorType == "before")
+            {
+                options = new ListOrganizationsOptions
+                {
+                    Limit = 5,
+                    Before = cursorId,
+                };
             }
-            //  No organization selected, return to index.
+            else if (cursorType == "after")
+            {
+                options = new ListOrganizationsOptions
+                {
+                    Limit = 5,
+                    After = cursorId,
+                };
+            }
+            var organizations = await organizationsService.ListOrganizations(options);
+
+            ViewData["organizationList"] = organizations.Data;
+            ViewData["before"] = organizations.ListMetadata.Before;
+            ViewData["after"] = organizations.ListMetadata.After;
+
             return View();
         }
 
         [Route("/send_event")]
         public IActionResult SendEvents()
         {
-            // Initialize WorkOS Audit Logs Service.
+            var eventVersion = Int32.Parse(Request.Form["event-version"]);
+            var actorName = Request.Form["actor-name"].ToString();
+            var actorType = Request.Form["actor-type"].ToString();
+            var targetName = Request.Form["target-name"].ToString();
+            var targetType = Request.Form["target-type"].ToString();
+
             var auditLogs = new AuditLogsService();
-            // Recieve event type.
-            var eventtype = Request.Form["event"].ToString();
-            AuditLogEvent eventPayload = null;
-            switch (eventtype)
+            var orgId = HttpContext.Session.GetString("organization_id");
+            var idempotencyKey = "884793cd-bef4-46cf-8790-ed49257a09c6";
+
+            var auditLogEvent = new AuditLogEvent
             {
-                case "user_signed_in":
-                    eventPayload = AuditLogMockEvents.UserSignedIn;
-                    break;
-                case "user_logged_out":
-                    eventPayload = AuditLogMockEvents.UserLoggedOut;
-                    break;
-                case "user_org_deleted":
-                    eventPayload = AuditLogMockEvents.UserOrganizationDeleted;
-                    break;
-                case "user_connection_deleted":
-                    eventPayload = AuditLogMockEvents.UserConnectionDeleted;
-                    break;
-            }
+                Action = "user.organization_deleted",
+                OccurredAt = DateTime.Now,
+                Version = eventVersion,
+                Actor =
+                    new AuditLogEventActor
+                    {
+                        Id = "user_01GBNJC3MX9ZZJW1FSTF4C5938",
+                        Type = actorType,
+                        Name = actorName
+                    },
+                Targets =
+                    new List<AuditLogEventTarget>() {
+                        new AuditLogEventTarget {
+                            Id = "team_01GBNJD4MKHVKJGEWK42JNMBGS",
+                            Type = targetType,
+                            Name = targetName
+                        },
+                    },
+                Context =
+                    new AuditLogEventContext
+                    {
+                        Location = "123.123.123.123",
+                        UserAgent = "Chrome/104.0.0.0",
+                    },
+            };
+
             var options = new CreateAuditLogEventOptions()
             {
-                OrganizationId = HttpContext.Session.GetString("organization_id"),
-                Event = eventPayload,
+                OrganizationId = orgId,
+                Event = auditLogEvent
             };
+
             auditLogs.CreateEvent(options);
-            //Set ViewData for orgId and orgName.
+
             ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
             ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
             return View();
         }
 
-        [Route("/set_org")]
-        [HttpPost]
-        public async Task<IActionResult> SetOrganization()
+        [Route("/set_org/{orgId?}")]
+        public async Task<IActionResult> SendEvents(string orgId)
         {
-            // Initialize WorkOS Organization Service.
             var organizationsService = new OrganizationsService();
-            // Get the organization.
-            var org = await organizationsService.GetOrganization(Request.Form["org"].ToString());
+
+            var organizationId = orgId;
+            var org = await organizationsService.GetOrganization(organizationId);
+            var now = DateTime.Now.ToUniversalTime();
+            var monthAgo = now.AddMonths(-1).ToUniversalTime();
+
             ViewData["OrgId"] = org.Id;
             ViewData["OrgName"] = org.Name;
-            // Set the org name and id in the session.
+            ViewData["RangeStart"] = monthAgo.ToString("o");
+            ViewData["RangeEnd"] = now.ToString("o");
+
             HttpContext.Session.SetString("organization_id", org.Id);
             HttpContext.Session.SetString("organization_name", org.Name);
-            return View("SendEvents");
-        }
-
-        [Route("/export_events")]
-        public IActionResult ExportEvents()
-        {
-            //Set ViewData for orgId and orgName.
-            ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
-            ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
             return View();
         }
 
-        [Route("/generate_csv")]
-        public async Task<IActionResult> GenerateCSV()
+        [Route("/csv")]
+        public async Task<IActionResult> CSV()
         {
-            //Initialize WorkOS Audit Logs Service.
+            var buttonClicked = Request.Form["event"].ToString();
+
             var auditLogs = new AuditLogsService();
-            //Get time range of the past month.
-            var currentDate = DateTime.Now;
-            var dateOneMonthAgo = currentDate.AddMonths(-1);
-            var options = new CreateAuditLogExportOptions()
+
+            if (buttonClicked == "generate_csv")
             {
-                OrganizationId = HttpContext.Session.GetString("organization_id"),
-                RangeStart = DateTime.Now.AddMonths(-1),
-                RangeEnd = DateTime.Now,
-            };
-            var auditLogExport = await auditLogs.CreateExport(options);
-            HttpContext.Session.SetString("export_id", auditLogExport.Id);
-            //Set ViewData for orgId and orgName.
-            ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
-            ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
-            return View("ExportEvents");
+                var rangeStart = Request.Form["range-start"].ToString();
+                var rangeStartParsed = DateTime.ParseExact(rangeStart, "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+    CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+                var rangeEnd = Request.Form["range-end"].ToString();
+                var rangeEndParsed = DateTime.ParseExact(rangeEnd, "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+    CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+                var filterActions = Request.Form["filter-actions"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
+                var filterActors = Request.Form["filter-actors"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
+                var filterTargets = Request.Form["filter-targets"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(w => w.Trim()).ToList();
+                var dateTimeTest = DateTime.Now;
+
+                var options = new CreateAuditLogExportOptions()
+                {
+                    OrganizationId = HttpContext.Session.GetString("organization_id"),
+                    RangeStart = rangeStartParsed,
+                    RangeEnd = rangeEndParsed,
+                };
+
+                if (filterActions?.Count > 0)
+                {
+                    options.Actions = filterActions;
+                }
+
+                if (filterActors?.Count > 0)
+                {
+                    options.Actors = filterActors;
+                }
+
+                if (filterTargets?.Count > 0)
+                {
+                    options.Targets = filterTargets;
+                }
+
+                var auditLogExport = await auditLogs.CreateExport(options);
+
+                if (auditLogExport.Id != null)
+                {
+                    HttpContext.Session.SetString("export_id", auditLogExport.Id);
+                }
+
+                ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
+                ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
+                return View("SendEvents");
+            }
+            else if (buttonClicked == "access_csv")
+            {
+                if (HttpContext.Session.GetString("export_id") != null)
+                {
+                    var auditLogExport = await auditLogs.GetExport(HttpContext.Session.GetString("export_id"));
+
+                    ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
+                    ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
+                    return Redirect(auditLogExport.Url);
+                }
+                else
+                {
+                    return View("SendEvents");
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
-        [Route("/access_csv")]
-        public async Task<IActionResult> AccessCSV()
+        [Route("/events/{intent?}")]
+        public async Task<IActionResult> Events(string intent)
         {
-            var auditLogs = new AuditLogsService();
-            var auditLogExport = await auditLogs.GetExport(HttpContext.Session.GetString("export_id"));
-            //Set ViewData for orgId and orgName.
-            ViewData["OrgId"] = HttpContext.Session.GetString("organization_id");
-            ViewData["OrgName"] = HttpContext.Session.GetString("organization_name");
-            return Redirect(auditLogExport.Url);
+            var intentType = intent;
+            var orgId = HttpContext.Session.GetString("organization_id");
+
+            var portalService = new PortalService();
+
+            var options = new GenerateLinkOptions
+            {
+                Organization = orgId
+            };
+
+            if (intentType == "AuditLogs")
+            {
+                options.Intent = Intent.AuditLogs;
+            }
+            if (intentType == "LogStreams")
+            {
+                options.Intent = Intent.LogStreams;
+            }
+
+            var link = await portalService.GenerateLink(options);
+
+            return Redirect(link);
         }
 
         [Route("/logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            //Set ViewData for orgId and orgName.
+            var organizationsService = new OrganizationsService();
+
+            var options = new ListOrganizationsOptions
+            {
+                Limit = 5
+            };
+
+            var organizations = await organizationsService.ListOrganizations(options);
+
+            ViewData["organizationList"] = organizations.Data;
+            ViewData["before"] = organizations.ListMetadata.Before;
+            ViewData["after"] = organizations.ListMetadata.After;
+
             HttpContext.Session.SetString("organization_id", "");
             HttpContext.Session.SetString("organization_name", "");
             return View("Index");
