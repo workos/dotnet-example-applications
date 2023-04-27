@@ -48,27 +48,50 @@ namespace WorkOS.SSOExampleApp.Controllers
             // Initialize SSOService()
             var ssoService = new SSOService();
 
-            /*
-            Set option for the getAuthorizationURL call, passing the domain (or Connection ID),
-            the redirect URI (optional, otherwise it will use your default set in the Dashboard)
-            and the clientID. Store the resulting URL in a `url` variable.
-            se domain associated to the organization in which your SSO Connection resides.
-            Alternatively, if your Organization has multiple SSO Connections within it,
-            you can pass the Connection ID instead of the domain.
-            */
-            var options = new GetAuthorizationURLOptions
+            // Extract the login type from the request
+            var request = HttpContext.Request;
+            var loginType = request.Form["login_method"];
+
+            // Set the provider based on the login type
+            ConnectionType provider;
+            switch (loginType)
+            {
+                case "saml":
+                    var options = new GetAuthorizationURLOptions
+                    {
+                        ClientId = Environment.GetEnvironmentVariable("WORKOS_CLIENT_ID"),
+                        Organization = "YOUR_ORGANIZATION_ID",
+                        RedirectURI = "https://localhost:5001/Home/Callback/",
+                    };
+                    // Call GetAuthorizationURL and store the resulting URL in a `url` variable.
+                    string url = ssoService.GetAuthorizationURL(options);
+                    // Redirect the user to the url generated above.
+                    return Redirect(url);
+                case "GoogleOAuth":
+                    provider = ConnectionType.GoogleOAuth;
+                    break;
+                case "MicrosoftOAuth":
+                    provider = ConnectionType.MicrosoftOAuth;
+                    break;
+                default:
+                    // Invalid login type
+                    return BadRequest();
+            }
+
+            var providerOptions = new GetAuthorizationURLOptions
             {
                 ClientId = Environment.GetEnvironmentVariable("WORKOS_CLIENT_ID"),
-                Connection = "",
+                Provider = provider,
                 RedirectURI = "https://localhost:5001/Home/Callback/",
             };
 
             // Call GetAuthorizationURL and store the resulting URL in a `url` variable.
-            string url = ssoService.GetAuthorizationURL(options);
+            string providerUrl = ssoService.GetAuthorizationURL(providerOptions);
 
             // Redirect the user to the url generated above.
-            return Redirect(url);
+            return Redirect(providerUrl);
         }
+
 
         // Capture and save the `code` passed as a querystring in the Redirect URI.
         public async Task<IActionResult> Callback([FromQuery(Name = "code")] string code)
