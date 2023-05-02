@@ -41,6 +41,13 @@ namespace WorkOS.MFAExampleApp.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Route("EnrollFactor")]
+        public async Task<IActionResult> EnrollFactor()
+        {
+            return View();
+        }
+
         [HttpPost]
         [Route("EnrollSmsFactor")]
         public async Task<IActionResult> EnrollSmsFactor()
