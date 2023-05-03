@@ -193,7 +193,13 @@ namespace WorkOS.MFAExampleApp.Controllers
         {
             var service = new MfaService();
             var challengeId = HttpContext.Session.GetString("challengeId");
-            var code = Request.Form["code"].ToString();
+            var code1 = Request.Form["code-1"].ToString();
+            var code2 = Request.Form["code-2"].ToString();
+            var code3 = Request.Form["code-3"].ToString();
+            var code4 = Request.Form["code-4"].ToString();
+            var code5 = Request.Form["code-5"].ToString();
+            var code6 = Request.Form["code-6"].ToString();
+            var code = code1 + code2 + code3 + code4 + code5 + code6;
             var options = new VerifyChallengeOptions()
             {
                 ChallengeId = challengeId,
