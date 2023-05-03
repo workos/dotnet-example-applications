@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.IO;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -48,6 +49,14 @@ namespace WorkOS.MFAExampleApp.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Route("ClearFactors")]
+        public async Task<IActionResult> ClearFactors()
+        {
+            HttpContext.Session.Clear();
+            return View("Index");
+        }
+
         [HttpPost]
         [Route("EnrollSmsFactor")]
         public async Task<IActionResult> EnrollSmsFactor()
@@ -86,35 +95,51 @@ namespace WorkOS.MFAExampleApp.Controllers
         [Route("EnrollTotpFactor")]
         public async Task<IActionResult> EnrollTotpFactor()
         {
-            var service = new MfaService();
-            var type = Request.Form["type"].ToString();
-
-            if (type == "totp")
+             // Get the JSON object from the request body
+            using (var reader = new StreamReader(Request.Body))
             {
-                var issuer = Request.Form["totp_issuer"].ToString();
-                var user = Request.Form["totp_user"].ToString();
-                var options = new EnrollTotpFactorOptions(issuer, user);
+                var requestBody = await reader.ReadToEndAsync();
 
-                // enroll totp factor
-                var newFactor = await service.EnrollFactor(options);
-                Console.WriteLine("This is the new totp factor: " + JsonConvert.SerializeObject(newFactor));
+                // Deserialize the JSON object into an object with the same properties
+                var jsonObject = JsonConvert.DeserializeObject<dynamic>(requestBody);
 
-                //Add factor to factors list in session
-                List<Factor> totpFactors = new List<Factor>();
-                string sessionFactors = HttpContext.Session.GetString("factors");
-                if (sessionFactors != null)
+                // Access the properties of the JSON object and assign them to variables
+                var type = jsonObject.type.ToString();
+                var issuer = jsonObject.issuer.ToString();
+                var user = jsonObject.user.ToString();
+
+                Console.WriteLine("Type: " + type);
+                Console.WriteLine("Issuer: " + issuer);
+                Console.WriteLine("User: " + user);
+
+                var service = new MfaService();
+
+                if (type == "totp")
                 {
-                    totpFactors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
-                }
-                totpFactors.Add(newFactor);
-                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(totpFactors));
-                return RedirectToAction("Index");
-            }
-            else
-            {
+                    var options = new EnrollTotpFactorOptions(issuer, user);
 
-                //Type not totp, return error view
-                return View("Error");
+                    // enroll totp factor
+                    var newFactor = await service.EnrollFactor(options);
+                    Console.WriteLine("This is the new totp factor: " + JsonConvert.SerializeObject(newFactor));
+
+                    //Add factor to factors list in session
+                    List<Factor> totpFactors = new List<Factor>();
+                    string sessionFactors = HttpContext.Session.GetString("factors");
+                    if (sessionFactors != null)
+                    {
+                        totpFactors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
+                    }
+                    totpFactors.Add(newFactor);
+                    HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(totpFactors));
+
+                    // Return the factor to the front-end for QR code scanning
+                    return Json(newFactor);
+                }
+                else
+                {
+                    //Type not totp, return error view
+                    return View("Error");
+                }
             }
         }
 

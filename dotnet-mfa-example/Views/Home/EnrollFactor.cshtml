@@ -40,7 +40,8 @@
                     <div class="flex space_between ">
                         <div class="factor_card">
                             <h2>Enroll SMS Factor</h2>
-                            <form method="POST" action="enroll_sms_factor">
+                            @using (Html.BeginForm("EnrollSmsFactor", "Home", FormMethod.Post))
+                            {
                                 <div class="flex-column">
                                     <div class="flex">
                                         <input class="text_input" type="text" id="phone_number" name="phone_number"
@@ -52,7 +53,7 @@
                                             Factor</button>
                                     </div>
                                 </div>
-                            </form>
+                            }
                         </div>
                         <div class="factor_card">
                             <h2>Enroll TOTP Factor</h2>
@@ -82,4 +83,64 @@
             </div>
         </div>
     </body>
+    <script>
+        const phoneNumber = document.getElementById("phone_number")
+        const totpIssuer = document.getElementById("totp_issuer")
+        const totpUser = document.getElementById("totp_user")
+        const smsSubmitButton = document.getElementById("sms-factor-submit-btn")
+        const totpSubmitButton = document.getElementById("totp-factor-submit-btn")
+
+        const closeModalBtn = document.getElementById("close-modal-btn")
+        const overlay = document.getElementById("overlay")
+        const modal = document.getElementById("modal")
+
+        phoneNumber.addEventListener("input", validateSmsForm)
+        totpIssuer.addEventListener("input", validateTotpForm)
+        totpUser.addEventListener("input", validateTotpForm)
+
+        function validateSmsForm() {
+            if (phoneNumber.value.trim() !== "") {
+                smsSubmitButton.disabled = false
+            } else {
+                smsSubmitButton.disabled = true
+            }
+        }
+
+        function validateTotpForm() {
+            if (totpIssuer.value.trim() !== "" && totpUser.value.trim() !== "") {
+                totpSubmitButton.disabled = false
+            } else {
+                totpSubmitButton.disabled = true
+            }
+        }
+
+        totpSubmitButton.addEventListener("click", function() {
+            fetch('/EnrollTotpFactor', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: 'totp',
+                    issuer: totpIssuer.value,
+                    user: totpUser.value,
+                })
+            })
+                .then(response => response.json())
+                .then(response => {
+                    console.log("response in last block ->", response)
+                    overlay.style.display = "block"
+                    modal.innerHTML = `
+                        <h2>Scan the QR code</h2>
+                        <p class="qr_code_instructions">Use the authenticator app to scan the QR code. After you scan the code, click 'Continue'.</p>
+                        <img class="qr_code" src=${response.totp.qrCode} alt="qr_code">
+                        <a href="/" class="button button-outline">Continue</a>
+                    `
+                })
+        })
+
+        closeModalBtn.addEventListener("click", function() {
+            overlay.style.display = "none"
+        })
+    </script>
 </html>
