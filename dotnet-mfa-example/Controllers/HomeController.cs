@@ -95,7 +95,7 @@ namespace WorkOS.MFAExampleApp.Controllers
         [Route("EnrollTotpFactor")]
         public async Task<IActionResult> EnrollTotpFactor()
         {
-             // Get the JSON object from the request body
+            // Get the JSON object from the request body
             using (var reader = new StreamReader(Request.Body))
             {
                 var requestBody = await reader.ReadToEndAsync();
