@@ -107,11 +107,6 @@ namespace WorkOS.MFAExampleApp.Controllers
                 var type = jsonObject.type.ToString();
                 var issuer = jsonObject.issuer.ToString();
                 var user = jsonObject.user.ToString();
-
-                Console.WriteLine("Type: " + type);
-                Console.WriteLine("Issuer: " + issuer);
-                Console.WriteLine("User: " + user);
-
                 var service = new MfaService();
 
                 if (type == "totp")
@@ -120,7 +115,7 @@ namespace WorkOS.MFAExampleApp.Controllers
 
                     // enroll totp factor
                     var newFactor = await service.EnrollFactor(options);
-                    Console.WriteLine("This is the new totp factor: " + JsonConvert.SerializeObject(newFactor));
+
 
                     //Add factor to factors list in session
                     List<Factor> totpFactors = new List<Factor>();
@@ -147,7 +142,6 @@ namespace WorkOS.MFAExampleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> FactorDetail(string id)
         {
-            Console.WriteLine("factor_detail route hit");
             var service = new MfaService();
             List<Factor> factors = new List<Factor>();
             string sessionFactors = HttpContext.Session.GetString("factors");

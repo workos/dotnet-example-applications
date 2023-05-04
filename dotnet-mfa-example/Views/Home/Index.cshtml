@@ -51,20 +51,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex-column">
-                    @if (ViewBag.factors != null)
-                    {
-                        @foreach (var factor in ViewBag.factors)
-                        {
-                            <a href='@string.Format("/factor_detail/{0}", factor.Id)' class="button login_button">
-                                @factor.Type | @factor.Id
-                            </a>
-                        }
-                    }
-                    else
+                <div class="flex-column">                    
+                    @if (ViewBag.factors == null || ViewBag.factors.Count == 0)
                     {
                         <div class="mt-20 card width-40vw">
                             <p style="text-align: center; color: gray;">No Current Factors</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex-column">
+                            @foreach (var factor in ViewBag.factors)
+                            {
+                                <a href='@string.Format("/factor_detail/{0}", factor.Id)' class="button login_button">
+                                    @factor.Type | @factor.Id
+                                </a>
+                            }
                         </div>
                     }
                 </div>
