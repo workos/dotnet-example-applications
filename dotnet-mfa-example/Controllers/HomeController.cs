@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.IO;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +40,21 @@ namespace WorkOS.MFAExampleApp.Controllers
 
             // Direct to Challenge Factor View
             return View();
+        }
+
+        [HttpGet]
+        [Route("EnrollFactor")]
+        public async Task<IActionResult> EnrollFactor()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("ClearFactors")]
+        public async Task<IActionResult> ClearFactors()
+        {
+            HttpContext.Session.Clear();
+            return View("Index");
         }
 
         [HttpPost]
@@ -79,35 +95,46 @@ namespace WorkOS.MFAExampleApp.Controllers
         [Route("EnrollTotpFactor")]
         public async Task<IActionResult> EnrollTotpFactor()
         {
-            var service = new MfaService();
-            var type = Request.Form["type"].ToString();
-
-            if (type == "totp")
+            // Get the JSON object from the request body
+            using (var reader = new StreamReader(Request.Body))
             {
-                var issuer = Request.Form["totp_issuer"].ToString();
-                var user = Request.Form["totp_user"].ToString();
-                var options = new EnrollTotpFactorOptions(issuer, user);
+                var requestBody = await reader.ReadToEndAsync();
 
-                // enroll totp factor
-                var newFactor = await service.EnrollFactor(options);
-                Console.WriteLine("This is the new totp factor: " + JsonConvert.SerializeObject(newFactor));
+                // Deserialize the JSON object into an object with the same properties
+                var jsonObject = JsonConvert.DeserializeObject<dynamic>(requestBody);
 
-                //Add factor to factors list in session
-                List<Factor> totpFactors = new List<Factor>();
-                string sessionFactors = HttpContext.Session.GetString("factors");
-                if (sessionFactors != null)
+                // Access the properties of the JSON object and assign them to variables
+                var type = jsonObject.type.ToString();
+                var issuer = jsonObject.issuer.ToString();
+                var user = jsonObject.user.ToString();
+                var service = new MfaService();
+
+                if (type == "totp")
                 {
-                    totpFactors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
-                }
-                totpFactors.Add(newFactor);
-                HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(totpFactors));
-                return RedirectToAction("Index");
-            }
-            else
-            {
+                    var options = new EnrollTotpFactorOptions(issuer, user);
 
-                //Type not totp, return error view
-                return View("Error");
+                    // enroll totp factor
+                    var newFactor = await service.EnrollFactor(options);
+
+
+                    //Add factor to factors list in session
+                    List<Factor> totpFactors = new List<Factor>();
+                    string sessionFactors = HttpContext.Session.GetString("factors");
+                    if (sessionFactors != null)
+                    {
+                        totpFactors = JsonConvert.DeserializeObject<List<Factor>>(sessionFactors);
+                    }
+                    totpFactors.Add(newFactor);
+                    HttpContext.Session.SetString("factors", Newtonsoft.Json.JsonConvert.SerializeObject(totpFactors));
+
+                    // Return the factor to the front-end for QR code scanning
+                    return Json(newFactor);
+                }
+                else
+                {
+                    //Type not totp, return error view
+                    return View("Error");
+                }
             }
         }
 
@@ -115,7 +142,6 @@ namespace WorkOS.MFAExampleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> FactorDetail(string id)
         {
-            Console.WriteLine("factor_detail route hit");
             var service = new MfaService();
             List<Factor> factors = new List<Factor>();
             string sessionFactors = HttpContext.Session.GetString("factors");
@@ -161,7 +187,13 @@ namespace WorkOS.MFAExampleApp.Controllers
         {
             var service = new MfaService();
             var challengeId = HttpContext.Session.GetString("challengeId");
-            var code = Request.Form["code"].ToString();
+            var code1 = Request.Form["code-1"].ToString();
+            var code2 = Request.Form["code-2"].ToString();
+            var code3 = Request.Form["code-3"].ToString();
+            var code4 = Request.Form["code-4"].ToString();
+            var code5 = Request.Form["code-5"].ToString();
+            var code6 = Request.Form["code-6"].ToString();
+            var code = code1 + code2 + code3 + code4 + code5 + code6;
             var options = new VerifyChallengeOptions()
             {
                 ChallengeId = challengeId,
