@@ -85,6 +85,21 @@ namespace WorkOS.AdminPortalExampleApp.Controllers
             return Redirect(portalLink);
         }
 
+        [Route("auditlogs")]
+        [HttpPost]
+        public async Task<IActionResult> AdminPortalAuditLogs()
+        {
+            var portalService = new PortalService();
+            var organizationId = TempData["OrganizationId"].ToString();
+            var options = new GenerateLinkOptions
+            {
+                Intent = Intent.AuditLogs,
+                Organization = organizationId,
+            };
+            var portalLink = await portalService.GenerateLink(options);
+            return Redirect(portalLink);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
