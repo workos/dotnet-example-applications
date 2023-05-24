@@ -145,6 +145,32 @@ namespace WorkOS.DSyncExampleApp.Controllers
             return View();
         }
 
+        [Route("groups/{id?}")]
+        public async Task<IActionResult> Groups(string id)
+        {
+            var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
+
+            var directorySync = new DirectorySyncService();
+
+            var directory = await directorySync.GetDirectory(id);
+
+            // Group Logic
+            var groupOptions = new ListGroupsOptions
+            {
+                Directory = id,
+            };
+
+            var groups = await directorySync.ListGroups(groupOptions);
+
+            List<Group> groupList = new List<Group>();
+            groupList = groups.Data;
+            ViewData["groupList"] = groupList;
+            ViewBag.Groups = groups;
+            ViewBag.CurrentDirectoryName = JsonSerializer.Serialize(directory.Name, serializeOptions);
+
+            return View();
+        }
+
         [Route("groupsandusers/{id?}")]
         public async Task<IActionResult> UsersGroups(string id)
         {
