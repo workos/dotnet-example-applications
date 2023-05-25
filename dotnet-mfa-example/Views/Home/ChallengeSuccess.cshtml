@@ -30,7 +30,7 @@
                     <div class="flex-column">
                         <div class="flex space-between">
                             <div>
-                                <h2>User Verified: <@ViewBag.successFactor.Valid</h2>
+                                <h2>User Verified: <@ViewBag.successResponse.Valid</h2>
                             </div>
                             <div>
                                 <a href="/"><button class="button">Go Back Home</button></a>
@@ -45,10 +45,10 @@
                                 }
                             </tr>
                             <tr>
-                                <td><@ViewBag.successFactor.Challenge.FactorId</td>
-                                <td>@ViewBag.successFactor.Challenge.CreatedAt</td>
+                                <td>@ViewBag.successResponse.Challenge.FactorId</td>
+                                <td>@ViewBag.successResponse.Challenge.CreatedAt</td>
                                 @if (ViewBag.currentFactorType == "sms") {
-                                <td>@ViewBag.successFactor.Challenge.ExpiresAt</td>
+                                <td>@ViewBag.successResponse.Challenge.ExpiresAt</td>
                                 }
                             </tr>
                         </table>

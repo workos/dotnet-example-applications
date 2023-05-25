@@ -203,7 +203,7 @@ namespace WorkOS.MFAExampleApp.Controllers
             var response = await service.VerifyChallenge(options);
             if (response is VerifyChallengeResponseSuccess successResponse)
             {
-                ViewBag.successFactor = response;
+                ViewBag.successResponse = successResponse;
                 ViewBag.currentFactorType = currentFactor.Type;
                 //Successful response, return to success view
                 return View("ChallengeSuccess");
