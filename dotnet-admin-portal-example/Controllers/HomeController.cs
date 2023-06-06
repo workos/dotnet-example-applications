@@ -43,7 +43,8 @@ namespace WorkOS.AdminPortalExampleApp.Controllers
 
             // Check if a matching domain already exists
 
-            var listOptions = new ListOrganizationsOptions {
+            var listOptions = new ListOrganizationsOptions
+            {
                 Domains =
                     new string[] {
                         DomainString,
