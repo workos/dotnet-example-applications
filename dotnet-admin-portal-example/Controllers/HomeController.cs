@@ -40,16 +40,37 @@ namespace WorkOS.AdminPortalExampleApp.Controllers
             var OrganizationName = Request.Form["org"].ToString();
             var DomainString = Request.Form["domain"].ToString();
             var OrganizationDomains = DomainString.Split(' ');
-            var options = new CreateOrganizationOptions
-            {
-                Name = OrganizationName,
-                Domains = OrganizationDomains,
+
+            // Check if a matching domain already exists
+
+            var listOptions = new ListOrganizationsOptions {
+                Domains =
+                    new string[] {
+                        DomainString,
+                    },
             };
 
-            // Make API call to generate new organization.
-            var newOrganization = await organizationService.CreateOrganization(options);
-            TempData["OrganizationId"] = newOrganization.Id;
-            Console.WriteLine("Created new org!");
+            var organizationList = await organizationService.ListOrganizations(listOptions);
+
+            if (organizationList.Data.Count > 0)
+            {
+                TempData["OrganizationId"] = organizationList.Data[0].Id;
+            }
+            // Otherwise, create a new Organization
+            else
+            {
+                var orgOptions = new CreateOrganizationOptions
+                {
+                    Name = OrganizationName,
+                    Domains = OrganizationDomains,
+                };
+
+                var newOrganization = await organizationService.CreateOrganization(orgOptions);
+                TempData["OrganizationId"] = newOrganization.Id;
+            }
+
+
+
 
             // Redirect user to Admin Portal link.
             return View("LoggedIn");
