@@ -40,7 +40,7 @@
                             <button class="button">Users</button>
                         </a>
                         <br>
-                        <a href="/groups?id=<%=directory.id%>">
+                        <a href='@string.Format("/groups/{0}", ViewBag.CurrentDirectoryId)'>
                             <button class="button">Groups</button>
                         </a>
                     </div>
