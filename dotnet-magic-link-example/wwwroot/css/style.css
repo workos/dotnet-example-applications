@@ -379,6 +379,10 @@ h1 {
   font-size: 12px;
 }
 
+pre.prettyprint {
+  border: none !important;
+}
+
 #noborder {
   border: none;
 }
