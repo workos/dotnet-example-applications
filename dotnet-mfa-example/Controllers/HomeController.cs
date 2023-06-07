@@ -187,6 +187,7 @@ namespace WorkOS.MFAExampleApp.Controllers
         {
             var service = new MfaService();
             var challengeId = HttpContext.Session.GetString("challengeId");
+            var currentFactor = JsonConvert.DeserializeObject<Factor>(HttpContext.Session.GetString("currentFactor"));
             var code1 = Request.Form["code-1"].ToString();
             var code2 = Request.Form["code-2"].ToString();
             var code3 = Request.Form["code-3"].ToString();
@@ -202,7 +203,8 @@ namespace WorkOS.MFAExampleApp.Controllers
             var response = await service.VerifyChallenge(options);
             if (response is VerifyChallengeResponseSuccess successResponse)
             {
-                ViewBag.successFactor = response;
+                ViewBag.successResponse = successResponse;
+                ViewBag.currentFactorType = currentFactor.Type;
                 //Successful response, return to success view
                 return View("ChallengeSuccess");
             }
